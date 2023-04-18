@@ -58,10 +58,10 @@ void createNodePembeli(address_P *headPembeli, address_P *newPembeli, address_BB
 void persediaanBarang(DataBarang dataBarang[MAX_BARANG])
 {
 	dataBarang[0].nama = "Shampo", dataBarang[0].stok = 50, dataBarang[0].harga = 15000;
-	dataBarang[1].nama = "Sabun Cuci Piring";
-	dataBarang[2].nama = "Sendok & Garpu";
-	dataBarang[3].nama = "Bubur Bayi";
-	dataBarang[4].nama = "Susu UHT";
+	dataBarang[1].nama = "Sabun Cuci Piring", dataBarang[1].stok = 50, dataBarang[1].harga = 10000;
+	dataBarang[2].nama = "Sendok & Garpu", dataBarang[2].stok = 50, dataBarang[2].harga = 30000;
+	dataBarang[3].nama = "Bubur Bayi", dataBarang[3].stok = 50, dataBarang[3].harga = 15000;
+	dataBarang[4].nama = "Susu UHT", dataBarang[4].stok = 50, dataBarang[4].harga = 40000;
 }
 
 /****************** Barang Belian *******************/
