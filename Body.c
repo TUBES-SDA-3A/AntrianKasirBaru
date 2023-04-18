@@ -26,7 +26,7 @@ void createNodePembeli(address_P *headPembeli, address_P *newPembeli, address_BB
 
 	address_P Traversal;
 
-	if (isEmpty_Pembeli(*newPembeli))
+	if (isEmptyPembeli(*newPembeli))
 	{
 		printf("Node Belum di Alokasi\n");
 	}
@@ -127,15 +127,220 @@ void delAwalBarangBelian(address_BB *barangBelian)
 
 	address_BB tempBarangBelian;
 
-	if (isEmpty_BarangBelian(*barangBelian))
+	if (isEmptyBarangBelian(*barangBelian))
 	{
 		printf("List Kosong");
 	}
 	else
 	{
 		tempBarangBelian = *barangBelian;
-		*barangBelian = next(*barangBelian);
+		*barangBelian = (*barangBelian)->next;
 		tempBarangBelian = NULL;
 		free(tempBarangBelian);
 	}
+}
+
+/****************List Antrian****************/
+bool isEmptyAntrian(address_A p)
+{
+	/* I.S : belum mengetahui apakah address_A kosong atau tidak.
+	   F.S : address_A p merupakan alamat dari head dari suatu linked list address_A yang akan dicek apakah kosong atau tidak.
+	*/
+
+	if (p == NULL)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+void createNodeAntrian(address_A *headAntrian, address_A *newAntrian, address_P Pembeli)
+{
+	/* I.S : - headAntrian: pointer menuju node pertama dari list antrian
+			 - newAntrian: pointer untuk menunjuk pada node baru yang akan dibuat
+			 - Pembeli: pointer menuju pada node pembeli
+	   F.S : Jika newAntrian berhasil dialokasikan, maka newAntrian akan menjadi node baru pada list antrian yang menunjuk ke Pembeli.
+			 Jika headAntrian masih kosong, maka headAntrian akan menunjuk ke newAntrian.
+			 Jika headAntrian tidak kosong, maka newAntrian akan ditambahkan pada akhir list antrian.
+	*/
+
+	address_A transA;
+
+	*newAntrian = (address_A)malloc(sizeof(Antrian)); // membuat node sebesar list antrian
+
+	if (isEmptyAntrian(*newAntrian))
+	{
+		printf("Node Belum di Alokasi\n");
+	}
+	else
+	{
+		(*newAntrian) = Nil;			  // next yang ditunjuk p disii Nil
+		(*newAntrian)->Pembeli = Pembeli; // nama yang ditunjuk p diisi nama
+	}
+
+	if (isEmptyAntrian(*headAntrian))
+	{
+		*headAntrian = *newAntrian; // pointer diisi pNew
+	}
+	else
+	{
+		transA = *headAntrian;
+		while (!isEmptyAntrian((transA)->next))
+		{							 // memeriksa next A apakah kosong
+			transA = (transA)->next; // A diisi next A
+		}
+		(transA)->next = *newAntrian;
+	}
+}
+
+void tampilListAntrian(address_A p)
+{
+	// Menampilkan seluruh isi Linked List, p parameter passing by value
+	int i = 1;
+
+	if (isEmptyAntrian(p))
+	{
+		printf("List Kosong\n");
+	}
+	else
+	{
+		while (!isEmptyAntrian(p))
+		{
+			printf("%d. %s", i, p->Pembeli->namaPembeli); // print yang ada di antrian
+			p = (p)->next;								  // p diisi next p
+			if (p != Nil)
+			{ // jika p tidak sama dengan nil
+				printf("\n");
+			}
+			i++; // lakukan ini sebanyak i
+		}
+		printf("\n");
+	}
+}
+
+void delAwalAntrian(address_A *p)
+{
+	address_A tempAntrian;
+
+	if (isEmptyAntrian(*p))
+	{								// memeriksa apakah antrian kosong
+		printf("Antrian Kosong\n"); // jika kosong print
+	}
+	else
+	{
+		tempAntrian = *p;		   // Antrian diisi address p
+		*p = (*p)->next; // pointer diisi next p
+		tempAntrian = NULL;	   // A diisi NIL
+		free(tempAntrian);	   // hampus A dari antrian
+	}
+}
+
+void DelPBarangBelian(address_BB *BB, infochar X)
+/* IS : L sembarang */
+/* FS : Jika ada elemen list beraddress P, dengan Info(P) = X */
+/* 	Maka P dihapus dari list dan di dealokasi */
+/* Jika tidak ada elemen list dengan Info(P) = X, maka list tetap */
+/* List mungkin menjadi kosong karena penghapusan */
+{
+	/* Kamus Lokal */
+	address_BB TransBB, Prec;
+	bool found = false;
+	/* Algoritma */
+	Prec = Nil;
+	TransBB = *BB;
+	while ((TransBB != Nil) && (!found))
+	{
+		if (strcmp((TransBB)->namaBarang, X) == 0)
+		{
+			found = true;
+		}
+		else
+		{
+			Prec = TransBB;
+			TransBB = (TransBB)->next;
+		}
+	}
+
+	if (found)
+	{
+		if (Prec == Nil && (TransBB)->next == Nil) /* Hanya 1 elemen */
+		{
+			TransBB->next = Nil;
+		}
+		else if (Prec == Nil) /* Ketemu di elemen 1*/
+		{
+			*BB = (TransBB)->next;
+			TransBB->next = Nil;
+		}
+		else /* Ketemu di elemen list yang ditengah/akhir */
+		{
+			(Prec)->next = (TransBB)->next;
+			TransBB->next = Nil;
+		}
+		free(TransBB);
+	}
+}
+
+void DelPAntrian(address_P *Pembeli, address_A next)
+/* IS : L sembarang */
+/* FS : Jika ada elemen list beraddress P, dengan Info(P) = X */
+/* 	Maka P dihapus dari list dan di dealokasi */
+/* Jika tidak ada elemen list dengan Info(P) = X, maka list tetap */
+/* List mungkin menjadi kosong karena penghapusan */
+{
+	/* Kamus Lokal */
+	address_P Prec, transP;
+	bool found = false;
+	/* Algoritma */
+	Prec = Nil;
+	transP = (*Pembeli);
+	while ((transP != Nil) && (!found))
+	{
+		if (strcmp((transP)->namaPembeli, next) == 0)
+		{
+			found = true;
+		}
+		else
+		{
+			Prec = transP;
+			transP = (transP)->next;
+		}
+	}
+
+	if (found)
+	{
+		if (Prec == Nil && (transP)->next == Nil) /* Hanya 1 elemen */
+		{
+			(transP)->next = Nil;
+		}
+		else if (Prec == Nil) /* Ketemu di elemen 1*/
+		{
+			(*Pembeli) = (transP)->next;
+			(transP)->next = Nil;
+		}
+		else /* Ketemu di elemen list yang ditengah/akhir */
+		{
+			(Prec)->next = (transP)->next;
+			(transP)->next = Nil;
+		}
+		free(transP);
+	}
+}
+
+void banner()
+{
+	printf("==========================================================================================================================");
+	printf("==      ===========================================================  ===========================    ======================");
+	printf("=  ====  ==========================================================  ============================  =======================");
+	printf("=  ====  ==========================================================  =============  =============  =======================");
+	printf("==  =======  =  ==    ====   ===  =   ===  =  = ====   ===  =   ===  =  ===   ===    ============  ====   ===  =  ===   ==");
+	printf("====  =====  =  ==  =  ==  =  ==    =  ==        ==  =  ==    =  ==    ===  =  ===  =============  ===  =  ==  =  ==  =  =");
+	printf("======  ===  =  ==  =  ==     ==  =======  =  =  =====  ==  =======   ====     ===  =============  ======  ===    =====  =");
+	printf("=  ====  ==  =  ==    ===  =====  =======  =  =  ===    ==  =======    ===  ======  ========  ===  ====    =====  ===    =");
+	printf("=  ====  ==  =  ==  =====  =  ==  =======  =  =  ==  =  ==  =======  =  ==  =  ===  ========  ===  ===  =  ==  =  ==  =  =");
+	printf("==      ====    ==  ======   ===  =======  =  =  ===    ==  =======  =  ===   ====   ========     =====    ===   ====    =");
+	printf("==========================================================================================================================");
 }

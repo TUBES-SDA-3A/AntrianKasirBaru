@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "e:/Politeknik Negeri Bandung/Struktur Data & Algoritma/Antrian_Kasir/3A",
-      "program": "e:/Politeknik Negeri Bandung/Struktur Data & Algoritma/Antrian_Kasir/3A/build/Debug/outDebug",
+      "cwd": "d:/OneDrive - Politeknik Negeri Bandung/CoolYeah/Semester 2/SDA/Praktek/TUBES/AntrianKasirBaru",
+      "program": "d:/OneDrive - Politeknik Negeri Bandung/CoolYeah/Semester 2/SDA/Praktek/TUBES/AntrianKasirBaru/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

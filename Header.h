@@ -10,6 +10,7 @@ Anggota :
 #define header_h
 #define Nil NULL
 #include <stdio.h>
+#include <string.h>
 #include <conio.h>
 #include <stdlib.h>
 #include <malloc.h>
@@ -66,6 +67,16 @@ void persediaanBarang(DataBarang dataBarang[MAX_BARANG]);
 bool isEmptyBarangBelian(address_BB p);
 void createNodeBarangBelian(address_BB *headBarangBelian, address_BB *newBarangBelian, infochar nama_barang, int jumlah_barang);
 void delAwalBarangBelian(address_BB *barangBelian);
+bool isEmptyAntrian(address_A p);
+void createNodeAntrian(address_A *headAntrian, address_A *newAntrian, address_P Pembeli);
+void tampilListAntrian(address_A p);
+void delAwalAntrian(address_A *p);
+void DelPBarangBelian(address_BB *BB, infochar X);
+void DelPAntrian(address_P *Pembeli, address_A next);
 
+void banner();
+
+void koor(int x, int y);
+void setColor(unsigned short color);
 
 #endif
