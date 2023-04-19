@@ -72,7 +72,7 @@ void createNodeAntrian(address_A *headAntrian, address_A *newAntrian, address_P 
 void tampilListAntrian(address_A p);
 void delAwalAntrian(address_A *p);
 void DelPBarangBelian(address_BB *BB, infochar X);
-void DelPAntrian(address_P *Pembeli, address_A next);
+void DelPAntrian(address_A *Antrian, infochar namaPembeli);
 
 void banner();
 
