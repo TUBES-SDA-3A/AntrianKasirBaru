@@ -1,5 +1,56 @@
 #include "Header.h"
 
+/****************** Datang Pembeli *******************/
+void datangPembeli(address_P *headPembeli, DataBarang *dataBarang)
+{
+	infochar namaPembeli;
+	int uangPembeli;
+	address_P newPembeli;
+
+	printf("Masukan nama untuk pembeli : ");
+	scanf(" %[^\n]", namaPembeli);
+
+	printf("Masukan uang yang dimiliki pembeli : ");
+	scanf("%d", &uangPembeli);
+
+	createNodePembeli(&(*headPembeli), &newPembeli, namaPembeli, uangPembeli);
+	beliBarang(&(*dataBarang), &newPembeli->hargaTotal);
+}
+
+void beliBarang(DataBarang *dataBarang[MAX_BARANG], int *hargaTotal)
+{
+	int kodeBarang, jumlahBarang, pilihanLagi;
+
+	while (pilihanLagi == 1)
+	{
+		printf("Masukan kode barang yang dipilih : ");
+		scanf("%d", &kodeBarang);
+
+		printf("Masukan jumlah barang : ");
+		scanf("%d", &jumlahBarang);
+
+		if ((*dataBarang)[kodeBarang].stok > 0 || (*dataBarang)[kodeBarang].stok > jumlahBarang)
+		{
+			*hargaTotal = (*dataBarang)[kodeBarang - 1].harga * jumlahBarang;
+			(*dataBarang)[kodeBarang - 1].stok -= jumlahBarang;
+
+			printf("Ingin pesan lagi ? ");
+			printf("1. YA");
+			printf("2. Tidak");
+			printf("Masukan pilihan : ");
+			scanf("%d", &pilihanLagi);
+		}
+		else if ((*dataBarang)[kodeBarang].stok < 0)
+		{
+			printf("Maaf persediaan habis. Silahkan beli yang lain!!");
+		}
+		else if ((*dataBarang)[kodeBarang].stok < jumlahBarang)
+		{
+			printf("Maaf persediaan kurang. Silahkan ubah jumlah barang atau beli yang lain!!");
+		}
+	}
+}
+
 /****************** Pembeli *******************/
 bool isEmptyPembeli(address_P p)
 {
@@ -17,7 +68,7 @@ bool isEmptyPembeli(address_P p)
 	}
 }
 
-void createNodePembeli(address_P *headPembeli, address_P *newPembeli, address_BB *q, infochar Nama_Pembeli, int No_Kasir, int uangPembeli)
+void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar Nama_Pembeli, int uangPembeli)
 {
 	/* 	I.S : headPembeli dan newPembeli belum memiliki nilai atau masih kosong, dan address_BB q, infochar Nama_Pembeli, int No_Kasir, dan int uangPembeli diisi dengan nilai yang sesuai.
 		F.S : terbentuknya sebuah node baru pada linked list pembeli dengan informasi yang sudah diisi dan disambungkan ke linked list.
@@ -33,9 +84,9 @@ void createNodePembeli(address_P *headPembeli, address_P *newPembeli, address_BB
 	else
 	{
 		(*newPembeli)->next = Nil;
-		(*newPembeli)->barangBelian = *q;
+		(*newPembeli)->barangBelian = Nil;
 		(*newPembeli)->namaPembeli = Nama_Pembeli;
-		(*newPembeli)->noKasir = No_Kasir;
+		(*newPembeli)->noKasir = 0;
 		(*newPembeli)->hargaTotal = 0;
 		(*newPembeli)->uangPembeli = uangPembeli;
 	}
@@ -177,7 +228,7 @@ void createNodeAntrian(address_A *headAntrian, address_A *newAntrian, address_P 
 	}
 	else
 	{
-		(*newAntrian) = Nil;			  // next yang ditunjuk p disii Nil
+		(*newAntrian) = Nil;				 // next yang ditunjuk p disii Nil
 		(*newAntrian)->Pembeli = newPembeli; // nama yang ditunjuk p diisi nama
 	}
 
@@ -333,4 +384,3 @@ void DelPAntrian(address_A *headAntrian, infochar namaPembeli)
 		printf("Nama pembeli tidak ditemukan didalam antrian");
 	}
 }
-
