@@ -10,6 +10,7 @@ Anggota :
 #define header_h
 #define Nil NULL
 #include <stdio.h>
+#include <string.h>
 #include <conio.h>
 #include <stdlib.h>
 #include <malloc.h>
@@ -61,11 +62,23 @@ typedef struct Kasir
 } dataKasir;
 
 bool isEmptyPembeli(address_P p);
-void createNodePembeli(address_P *headPembeli, address_P *newPembeli, address_BB *q, infochar Nama_Pembeli, int No_Kasir, int uangPembeli);
+void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar Nama_Pembeli, int uangPembeli);
 void persediaanBarang(DataBarang dataBarang[MAX_BARANG]);
 bool isEmptyBarangBelian(address_BB p);
 void createNodeBarangBelian(address_BB *headBarangBelian, address_BB *newBarangBelian, infochar nama_barang, int jumlah_barang);
 void delAwalBarangBelian(address_BB *barangBelian);
+bool isEmptyAntrian(address_A p);
+void createNodeAntrian(address_A *headAntrian, address_A *newAntrian, address_P Pembeli);
+void tampilListAntrian(address_A p);
+void delAwalAntrian(address_A *p);
+void DelPBarangBelian(address_BB *BB, infochar X);
+void DelPAntrian(address_A *Antrian, infochar namaPembeli);
 
+void banner();
+void displayMenu();
+
+void koor(int x, int y);
+void setColor(unsigned short color);
+HWND WINAPI GetConsoleWindowNT(void);
 
 #endif
