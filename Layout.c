@@ -25,6 +25,7 @@ void displayMenu()
     koor(45, 15), printf("2. Datang pembeli baru");
     koor(45, 16), printf("3. Tampil antrian kasir");
     koor(45, 17), printf("4. Proses antrian semua kasir");
+    koor(45, 18), printf("5. Tutup Toko");
 }
 
 void displayPersedianBarang()
@@ -73,13 +74,19 @@ void tampilanStruk(address_P pembeli, DataBarang dataBarang[MAX_BARANG])
 
 void displayListBarang(DataBarang dataBarang[MAX_BARANG])
 {
-	int i;
-	printf("\t\t\t\tList Barang Toko Corona\n");
-	printf("Nama Barang\t\t\t\t\tStok Barang\t\t\t\tHarga\n");
-
-	for (i = 0; i < MAX_BARANG; i++)
+    int y = 5;
+	koor(45,2),printf("List Barang di Supermarket Jaya");
+	koor(35,4),printf("No. ");
+	koor(45,4),printf("Nama Barang");
+	koor(75,4),printf("Stok");
+	koor(85,4),printf("Harga");
+	for (int i = 0; i < MAX_BARANG; i++)
 	{
-		printf("%d. %s\t\t\t\t%d\t\t\t\t\t%d\n", i + 1, dataBarang[i].nama, dataBarang[i].stok, dataBarang[i].harga);
+		koor(35,y),printf("%d. ", i + 1);
+		koor(45,y),printf("%s", dataBarang[i].nama);
+		koor(75,y),printf("%d", dataBarang[i].stok);
+		koor(85,y),printf("%d", dataBarang[i].harga);
+        y++;
 	}
 
 }

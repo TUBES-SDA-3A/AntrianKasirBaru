@@ -16,7 +16,7 @@ Anggota :
 #include <malloc.h>
 #include <stdbool.h>
 #include <windows.h>
-#define MAX_BARANG 20
+#define MAX_BARANG 10
 
 typedef const char *infochar;
 typedef struct Pembeli *address_P;

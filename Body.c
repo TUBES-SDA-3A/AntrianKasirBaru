@@ -109,11 +109,16 @@ void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar N
 /****************** Persediaan Barang *****************/
 void persediaanBarang(DataBarang (*dataBarang)[MAX_BARANG])
 {
-	(*dataBarang)[0].nama = "Shampo", (*dataBarang)[0].stok = 50, (*dataBarang)[0].harga = 15000;
-	(*dataBarang)[1].nama = "Sabun Cuci Piring", (*dataBarang)[1].stok = 50, (*dataBarang)[1].harga = 10000;
-	(*dataBarang)[2].nama = "Sendok & Garpu", (*dataBarang)[2].stok = 50, (*dataBarang)[2].harga = 30000;
-	(*dataBarang)[3].nama = "Bubur Bayi", (*dataBarang)[3].stok = 50, (*dataBarang)[3].harga = 15000;
-	(*dataBarang)[4].nama = "Susu UHT", (*dataBarang)[4].stok = 50, (*dataBarang)[4].harga = 40000;
+    (*dataBarang)[0].nama = "Shampo", (*dataBarang)[0].stok = 50, (*dataBarang)[0].harga = 12000;
+    (*dataBarang)[1].nama = "Sabun Cuci Piring", (*dataBarang)[1].stok = 100, (*dataBarang)[1].harga = 5000;
+    (*dataBarang)[2].nama = "Sendok & Garpu", (*dataBarang)[2].stok = 30, (*dataBarang)[2].harga = 25000;
+    (*dataBarang)[3].nama = "Bubur Bayi", (*dataBarang)[3].stok = 150, (*dataBarang)[3].harga = 10000;
+    (*dataBarang)[4].nama = "Susu UHT", (*dataBarang)[4].stok = 60, (*dataBarang)[4].harga = 25000;
+    (*dataBarang)[5].nama = "Mie Instan", (*dataBarang)[5].stok = 300, (*dataBarang)[5].harga = 2500;
+    (*dataBarang)[6].nama = "Air Mineral", (*dataBarang)[6].stok = 160, (*dataBarang)[6].harga = 4000;
+    (*dataBarang)[7].nama = "P3K", (*dataBarang)[7].stok = 70, (*dataBarang)[7].harga = 50000;
+    (*dataBarang)[8].nama = "Kue Kering", (*dataBarang)[8].stok = 40, (*dataBarang)[8].harga = 60000;
+    (*dataBarang)[9].nama = "Chiki", (*dataBarang)[9].stok = 100, (*dataBarang)[9].harga = 12000;
 }
 
 /****************** Barang Belian *******************/
