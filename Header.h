@@ -20,7 +20,6 @@ Anggota :
 
 typedef const char *infochar;
 typedef struct Pembeli *address_P;
-typedef struct List_Barang *address_B;
 typedef struct List_BarangBelian *address_BB;
 typedef struct Antrian *address_A;
 
@@ -34,7 +33,7 @@ typedef struct Pembeli
     address_P next;
 } Pembeli;
 
-typedef struct List_Barang
+typedef struct DataBarang
 {
     infochar nama;
     int stok;
@@ -63,7 +62,7 @@ typedef struct Kasir
 
 bool isEmptyPembeli(address_P p);
 void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar Nama_Pembeli, int uangPembeli);
-void persediaanBarang(DataBarang dataBarang[MAX_BARANG]);
+void persediaanBarang(DataBarang (*dataBarang)[MAX_BARANG]);
 bool isEmptyBarangBelian(address_BB p);
 void createNodeBarangBelian(address_BB *headBarangBelian, address_BB *newBarangBelian, infochar nama_barang, int jumlah_barang);
 void delAwalBarangBelian(address_BB *barangBelian);
@@ -73,9 +72,16 @@ void tampilListAntrian(address_A p);
 void delAwalAntrian(address_A *p);
 void DelPBarangBelian(address_BB *BB, infochar X);
 void DelPAntrian(address_A *Antrian, infochar namaPembeli);
+void beliBarang(DataBarang *dataBarang[MAX_BARANG], int *hargaTotal);
+int searchBarang(DataBarang dataBarang[MAX_BARANG], infochar namaBarang);
+
+// set nilai untuk idPembeli
+// void generateKodeStruk(kodeStruk, idPembeli);
+
 
 void banner();
 void displayMenu();
+void displayListBarang(DataBarang dataBarang[MAX_BARANG]);
 
 void koor(int x, int y);
 void setColor(unsigned short color);

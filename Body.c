@@ -1,7 +1,7 @@
 #include "Header.h"
 
 /****************** Datang Pembeli *******************/
-void datangPembeli(address_P *headPembeli, DataBarang *dataBarang)
+void datangPembeli(address_P *headPembeli, DataBarang *dataBarang[MAX_BARANG])
 {
 	infochar namaPembeli;
 	int uangPembeli;
@@ -19,12 +19,13 @@ void datangPembeli(address_P *headPembeli, DataBarang *dataBarang)
 
 void beliBarang(DataBarang *dataBarang[MAX_BARANG], int *hargaTotal)
 {
-	int kodeBarang, jumlahBarang, pilihanLagi;
+	int kodeBarang, jumlahBarang, pilihanLagi = 1;
 
 	while (pilihanLagi == 1)
 	{
 		printf("Masukan kode barang yang dipilih : ");
 		scanf("%d", &kodeBarang);
+		kodeBarang -= 1;
 
 		printf("Masukan jumlah barang : ");
 		scanf("%d", &jumlahBarang);
@@ -33,12 +34,7 @@ void beliBarang(DataBarang *dataBarang[MAX_BARANG], int *hargaTotal)
 		{
 			*hargaTotal = (*dataBarang)[kodeBarang - 1].harga * jumlahBarang;
 			(*dataBarang)[kodeBarang - 1].stok -= jumlahBarang;
-
-			printf("Ingin pesan lagi ? ");
-			printf("1. YA");
-			printf("2. Tidak");
-			printf("Masukan pilihan : ");
-			scanf("%d", &pilihanLagi);
+			printf("%s berhasil ditambahkan ke dalam keranjang.", (*dataBarang)[kodeBarang].nama);
 		}
 		else if ((*dataBarang)[kodeBarang].stok < 0)
 		{
@@ -48,6 +44,11 @@ void beliBarang(DataBarang *dataBarang[MAX_BARANG], int *hargaTotal)
 		{
 			printf("Maaf persediaan kurang. Silahkan ubah jumlah barang atau beli yang lain!!");
 		}
+		printf("Ingin pesan lagi ? ");
+		printf("1. YA");
+		printf("2. Tidak");
+		printf("Masukan pilihan : ");
+		scanf("%d", &pilihanLagi);
 	}
 }
 
@@ -106,13 +107,13 @@ void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar N
 }
 
 /****************** Persediaan Barang *****************/
-void persediaanBarang(DataBarang dataBarang[MAX_BARANG])
+void persediaanBarang(DataBarang (*dataBarang)[MAX_BARANG])
 {
-	dataBarang[0].nama = "Shampo", dataBarang[0].stok = 50, dataBarang[0].harga = 15000;
-	dataBarang[1].nama = "Sabun Cuci Piring", dataBarang[1].stok = 50, dataBarang[1].harga = 10000;
-	dataBarang[2].nama = "Sendok & Garpu", dataBarang[2].stok = 50, dataBarang[2].harga = 30000;
-	dataBarang[3].nama = "Bubur Bayi", dataBarang[3].stok = 50, dataBarang[3].harga = 15000;
-	dataBarang[4].nama = "Susu UHT", dataBarang[4].stok = 50, dataBarang[4].harga = 40000;
+	(*dataBarang)[0].nama = "Shampo", (*dataBarang)[0].stok = 50, (*dataBarang)[0].harga = 15000;
+	(*dataBarang)[1].nama = "Sabun Cuci Piring", (*dataBarang)[1].stok = 50, (*dataBarang)[1].harga = 10000;
+	(*dataBarang)[2].nama = "Sendok & Garpu", (*dataBarang)[2].stok = 50, (*dataBarang)[2].harga = 30000;
+	(*dataBarang)[3].nama = "Bubur Bayi", (*dataBarang)[3].stok = 50, (*dataBarang)[3].harga = 15000;
+	(*dataBarang)[4].nama = "Susu UHT", (*dataBarang)[4].stok = 50, (*dataBarang)[4].harga = 40000;
 }
 
 /****************** Barang Belian *******************/
@@ -382,5 +383,16 @@ void DelPAntrian(address_A *headAntrian, infochar namaPembeli)
 	else
 	{
 		printf("Nama pembeli tidak ditemukan didalam antrian");
+	}
+}
+
+int searchBarang(DataBarang dataBarang[MAX_BARANG], infochar namaBarang)
+{
+	for (int i = 0; i < MAX_BARANG; i++)
+	{
+		if (strcmp(dataBarang[i].nama, namaBarang) == 0)
+		{
+			return i;
+		}
 	}
 }
