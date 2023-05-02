@@ -18,7 +18,7 @@ Anggota :
 #include <windows.h>
 #define MAX_BARANG 10
 
-typedef const char *infochar;
+typedef const char * infochar;
 typedef struct Pembeli *address_P;
 typedef struct List_BarangBelian *address_BB;
 typedef struct Antrian *address_A;
@@ -60,11 +60,13 @@ typedef struct Kasir
     infochar namaKasir;
 } dataKasir;
 
-bool isEmptyPembeli(address_P p);
 void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar Nama_Pembeli, int uangPembeli);
+void alokasiNodePembeli(address_P *tempPembeli);
+void datangPembeli(address_P *headPembeli, DataBarang (*dataBarang)[MAX_BARANG]);
+void beliBarang(DataBarang (*dataBarang)[MAX_BARANG], address_P *newPembeli);
 void persediaanBarang(DataBarang (*dataBarang)[MAX_BARANG]);
-bool isEmptyBarangBelian(address_BB p);
-void createNodeBarangBelian(address_BB *headBarangBelian, address_BB *newBarangBelian, infochar nama_barang, int jumlah_barang);
+void alokasiNodeBarangBelian(address_BB *tempBarangBelian);
+void createNodeBarangBelian(address_BB *headBarangBelian, infochar namaBarang, int jumlahBarang);
 void delAwalBarangBelian(address_BB *barangBelian);
 bool isEmptyAntrian(address_A p);
 void createNodeAntrian(address_A *headAntrian, address_A *newAntrian, address_P Pembeli);
@@ -72,7 +74,6 @@ void tampilListAntrian(address_A p);
 void delAwalAntrian(address_A *p);
 void DelPBarangBelian(address_BB *BB, infochar X);
 void DelPAntrian(address_A *Antrian, infochar namaPembeli);
-void beliBarang(DataBarang *dataBarang[MAX_BARANG], int *hargaTotal);
 int searchBarang(DataBarang dataBarang[MAX_BARANG], infochar namaBarang);
 
 // set nilai untuk idPembeli
@@ -81,7 +82,8 @@ int searchBarang(DataBarang dataBarang[MAX_BARANG], infochar namaBarang);
 
 void banner();
 void displayMenu();
-void displayListBarang(DataBarang dataBarang[MAX_BARANG]);
+void displayListBarang(DataBarang dataBarang[MAX_BARANG], int flagListBarang);
+void kotakPersediaanBarang(int flagKotak);
 
 void koor(int x, int y);
 void setColor(unsigned short color);

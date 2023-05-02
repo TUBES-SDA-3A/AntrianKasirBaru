@@ -7,10 +7,17 @@ int main()
     MoveWindow(hWnd, 180, 50, 1000, 600, TRUE);
 
     // Deklarasi Variabel
-    bool status = true;
     DataBarang dataBarang[MAX_BARANG];
+    address_P headPembeli;
+
+    bool status = true;
     int pilihan;
+
+    // Inisialisasi Persediaan Barang 
     persediaanBarang(&dataBarang);
+
+    // Alokasi Node
+    alokasiNodePembeli(&headPembeli);
 
     // Algoritma
     while (status)
@@ -22,13 +29,12 @@ int main()
         {
         case 1:
             system("cls");
-            displayListBarang(dataBarang);
-            getch();
+            displayListBarang(dataBarang, 1);
             break;
 
         case 2:
             system("cls");
-            printf("test");
+            datangPembeli(&headPembeli, &dataBarang);
             getch();
             break;
         case 5:

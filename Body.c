@@ -1,72 +1,73 @@
 #include "Header.h"
 
 /****************** Datang Pembeli *******************/
-void datangPembeli(address_P *headPembeli, DataBarang *dataBarang[MAX_BARANG])
+void datangPembeli(address_P *headPembeli, DataBarang (*dataBarang)[MAX_BARANG])
 {
-	infochar namaPembeli;
+	infochar namaPembeli = (infochar)malloc(sizeof(infochar));
 	int uangPembeli;
 	address_P newPembeli;
 
-	printf("Masukan nama untuk pembeli : ");
+	alokasiNodePembeli(&newPembeli);
+
+	banner();
+
+	koor(40, 15), printf("Masukan nama untuk pembeli : ");
 	scanf(" %[^\n]", namaPembeli);
 
-	printf("Masukan uang yang dimiliki pembeli : ");
+	koor(40, 16), printf("Masukan uang yang dimiliki pembeli : ");
 	scanf("%d", &uangPembeli);
 
 	createNodePembeli(&(*headPembeli), &newPembeli, namaPembeli, uangPembeli);
-	beliBarang(&(*dataBarang), &newPembeli->hargaTotal);
+	beliBarang(&(*dataBarang), &newPembeli);
 }
 
-void beliBarang(DataBarang *dataBarang[MAX_BARANG], int *hargaTotal)
+void beliBarang(DataBarang (*dataBarang)[MAX_BARANG], address_P *newPembeli)
 {
 	int kodeBarang, jumlahBarang, pilihanLagi = 1;
 
+	alokasiNodeBarangBelian(&(*newPembeli)->barangBelian);
+
 	while (pilihanLagi == 1)
 	{
-		printf("Masukan kode barang yang dipilih : ");
+		system("cls");
+		displayListBarang((*dataBarang), 2);
+		koor(45, 17), printf("Masukan kode barang yang dipilih : ");
 		scanf("%d", &kodeBarang);
 		kodeBarang -= 1;
 
-		printf("Masukan jumlah barang : ");
+		koor(45, 18), printf("Masukan jumlah barang : ");
 		scanf("%d", &jumlahBarang);
 
-		if ((*dataBarang)[kodeBarang].stok > 0 || (*dataBarang)[kodeBarang].stok > jumlahBarang)
+		if ((*dataBarang)[kodeBarang].stok > 0 || (*dataBarang)[kodeBarang].stok >= jumlahBarang)
 		{
-			*hargaTotal = (*dataBarang)[kodeBarang - 1].harga * jumlahBarang;
-			(*dataBarang)[kodeBarang - 1].stok -= jumlahBarang;
-			printf("%s berhasil ditambahkan ke dalam keranjang.", (*dataBarang)[kodeBarang].nama);
+			(*newPembeli)->hargaTotal = (*dataBarang)[kodeBarang].harga * jumlahBarang;
+			(*dataBarang)[kodeBarang].stok = (*dataBarang)[kodeBarang].stok - jumlahBarang;
+			createNodeBarangBelian(&(*newPembeli)->barangBelian, (*dataBarang)[kodeBarang].nama, jumlahBarang);
+			koor(40, 20), printf("%s berhasil ditambahkan ke dalam keranjang.", (*dataBarang)[kodeBarang].nama);
 		}
 		else if ((*dataBarang)[kodeBarang].stok < 0)
 		{
-			printf("Maaf persediaan habis. Silahkan beli yang lain!!");
+			koor(40, 20), printf("Maaf persediaan habis. Silahkan beli yang lain!!");
 		}
 		else if ((*dataBarang)[kodeBarang].stok < jumlahBarang)
 		{
-			printf("Maaf persediaan kurang. Silahkan ubah jumlah barang atau beli yang lain!!");
+			koor(40, 20), printf("Maaf persediaan kurang. Silahkan ubah jumlah barang atau beli yang lain!!");
 		}
-		printf("Ingin pesan lagi ? ");
-		printf("1. YA");
-		printf("2. Tidak");
-		printf("Masukan pilihan : ");
+
+		system("cls");
+		koor(45, 10), printf("Ingin pesan lagi ? ");
+		koor(45, 11), printf("1. YA");
+		koor(45, 12), printf("2. Tidak");
+		koor(45, 13), printf("Masukan pilihan : ");
 		scanf("%d", &pilihanLagi);
 	}
 }
 
 /****************** Pembeli *******************/
-bool isEmptyPembeli(address_P p)
+void alokasiNodePembeli(address_P *tempPembeli)
 {
-	/* 	I.S : tidak ada yang berubah, hanya menerima satu parameter berupa alamat dari node pembeli.
-		F.S : fungsi ini mengembalikan nilai boolean, yaitu 1 jika queue pembeli kosong dan 0 jika queue pembeli tidak kosong.
-	*/
-
-	if (p == NULL)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	*tempPembeli = (address_P)malloc(sizeof(Pembeli));
+	(*tempPembeli)->next = Nil;
 }
 
 void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar Nama_Pembeli, int uangPembeli)
@@ -74,31 +75,24 @@ void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar N
 	/* 	I.S : headPembeli dan newPembeli belum memiliki nilai atau masih kosong, dan address_BB q, infochar Nama_Pembeli, int No_Kasir, dan int uangPembeli diisi dengan nilai yang sesuai.
 		F.S : terbentuknya sebuah node baru pada linked list pembeli dengan informasi yang sudah diisi dan disambungkan ke linked list.
 	*/
-	*newPembeli = (address_P)malloc(sizeof(Pembeli));
 
 	address_P Traversal;
 
-	if (isEmptyPembeli(*newPembeli))
-	{
-		printf("Node Belum di Alokasi\n");
-	}
-	else
-	{
-		(*newPembeli)->next = Nil;
-		(*newPembeli)->barangBelian = Nil;
-		(*newPembeli)->namaPembeli = Nama_Pembeli;
-		(*newPembeli)->noKasir = 0;
-		(*newPembeli)->hargaTotal = 0;
-		(*newPembeli)->uangPembeli = uangPembeli;
-	}
-	if (isEmptyPembeli(*headPembeli))
+	(*newPembeli)->next = Nil;
+	(*newPembeli)->barangBelian = Nil;
+	(*newPembeli)->namaPembeli = Nama_Pembeli;
+	(*newPembeli)->noKasir = 0;
+	(*newPembeli)->hargaTotal = 0;
+	(*newPembeli)->uangPembeli = uangPembeli;
+
+	if ((*headPembeli)->next == Nil)
 	{
 		*headPembeli = *newPembeli;
 	}
 	else
 	{
 		Traversal = *headPembeli;
-		while (!isEmptyPembeli(Traversal->next))
+		while ((*headPembeli)->next == Nil)
 		{
 			Traversal = Traversal->next;
 		}
@@ -109,70 +103,55 @@ void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar N
 /****************** Persediaan Barang *****************/
 void persediaanBarang(DataBarang (*dataBarang)[MAX_BARANG])
 {
-    (*dataBarang)[0].nama = "Shampo", (*dataBarang)[0].stok = 50, (*dataBarang)[0].harga = 12000;
-    (*dataBarang)[1].nama = "Sabun Cuci Piring", (*dataBarang)[1].stok = 100, (*dataBarang)[1].harga = 5000;
-    (*dataBarang)[2].nama = "Sendok & Garpu", (*dataBarang)[2].stok = 30, (*dataBarang)[2].harga = 25000;
-    (*dataBarang)[3].nama = "Bubur Bayi", (*dataBarang)[3].stok = 150, (*dataBarang)[3].harga = 10000;
-    (*dataBarang)[4].nama = "Susu UHT", (*dataBarang)[4].stok = 60, (*dataBarang)[4].harga = 25000;
-    (*dataBarang)[5].nama = "Mie Instan", (*dataBarang)[5].stok = 300, (*dataBarang)[5].harga = 2500;
-    (*dataBarang)[6].nama = "Air Mineral", (*dataBarang)[6].stok = 160, (*dataBarang)[6].harga = 4000;
-    (*dataBarang)[7].nama = "P3K", (*dataBarang)[7].stok = 70, (*dataBarang)[7].harga = 50000;
-    (*dataBarang)[8].nama = "Kue Kering", (*dataBarang)[8].stok = 40, (*dataBarang)[8].harga = 60000;
-    (*dataBarang)[9].nama = "Chiki", (*dataBarang)[9].stok = 100, (*dataBarang)[9].harga = 12000;
+	(*dataBarang)[0].nama = "Shampo", (*dataBarang)[0].stok = 50, (*dataBarang)[0].harga = 12000;
+	(*dataBarang)[1].nama = "Sabun Cuci Piring", (*dataBarang)[1].stok = 100, (*dataBarang)[1].harga = 5000;
+	(*dataBarang)[2].nama = "Sendok & Garpu", (*dataBarang)[2].stok = 30, (*dataBarang)[2].harga = 25000;
+	(*dataBarang)[3].nama = "Bubur Bayi", (*dataBarang)[3].stok = 150, (*dataBarang)[3].harga = 10000;
+	(*dataBarang)[4].nama = "Susu UHT", (*dataBarang)[4].stok = 60, (*dataBarang)[4].harga = 25000;
+	(*dataBarang)[5].nama = "Mie Instan", (*dataBarang)[5].stok = 300, (*dataBarang)[5].harga = 2500;
+	(*dataBarang)[6].nama = "Air Mineral", (*dataBarang)[6].stok = 160, (*dataBarang)[6].harga = 4000;
+	(*dataBarang)[7].nama = "P3K", (*dataBarang)[7].stok = 70, (*dataBarang)[7].harga = 50000;
+	(*dataBarang)[8].nama = "Kue Kering", (*dataBarang)[8].stok = 40, (*dataBarang)[8].harga = 60000;
+	(*dataBarang)[9].nama = "Chiki", (*dataBarang)[9].stok = 100, (*dataBarang)[9].harga = 12000;
 }
 
 /****************** Barang Belian *******************/
-bool isEmptyBarangBelian(address_BB p)
+void alokasiNodeBarangBelian(address_BB *tempBarangBelian)
 {
-	/* I.S : Alamat node barang belian (p) mungkin kosong (NULL) atau tidak kosong.
-	   F.S : mengetahui apakah suatu node barang belian kosong atau tidak dengan melihat nilai boolean yang dikembalikan oleh fungsi ini.
-	*/
-
-	if (p == NULL)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	*tempBarangBelian = (address_BB)malloc(sizeof(List_BarangBelian));
+	(*tempBarangBelian)->next = Nil;
 }
 
-void createNodeBarangBelian(address_BB *headBarangBelian, address_BB *newBarangBelian, infochar nama_barang, int jumlah_barang)
-{ // check
+void createNodeBarangBelian(address_BB *headBarangBelian, infochar namaBarang, int jumlahBarang)
+{ 
 	/* I.S : - headAntrian merupakan pointer ke list antrian yang awalnya kosong atau NULL.
 			 - newAntrian merupakan pointer yang belum dialokasikan ke memori.
 			 - Pembeli merupakan data pembeli yang akan ditambahkan ke dalam node antrian.
-	   F.S : newAntrian telah dialokasikan ke memori, emiliki nilai next yang diisi dengan NULL, dan memiliki nilai Pembeli yang diisi dengan Pembeli.
+	   F.S : newAntrian telah dialokasikan ke memori, memiliki nilai next yang diisi dengan NULL, dan memiliki nilai Pembeli yang diisi dengan Pembeli.
 	*/
 
 	address_BB transBB;
 
-	*newBarangBelian = (address_BB)malloc(sizeof(List_BarangBelian));
+	address_BB newBarangBelian;
 
-	if (isEmptyBarangBelian(*newBarangBelian))
-	{
-		printf("Node Belum di Alokasi\n");
-	}
-	else
-	{
-		(*newBarangBelian)->next = Nil;
-		(*newBarangBelian)->namaBarang = nama_barang;
-		(*newBarangBelian)->jumlahBarang = jumlah_barang;
-	}
+	alokasiNodeBarangBelian(&newBarangBelian);
 
-	if (isEmptyBarangBelian(*headBarangBelian))
+	(newBarangBelian)->next = Nil;
+	(newBarangBelian)->namaBarang = namaBarang;
+	(newBarangBelian)->jumlahBarang = jumlahBarang;
+
+	if ((*headBarangBelian)->next == Nil)
 	{
-		*headBarangBelian = *newBarangBelian;
+		*headBarangBelian = newBarangBelian;
 	}
 	else
 	{
 		transBB = *headBarangBelian;
-		while (!isEmptyBarangBelian(transBB->next))
+		while (transBB->next != Nil)
 		{
 			transBB = (transBB)->next;
 		}
-		transBB = *newBarangBelian;
+		transBB = newBarangBelian;
 	}
 }
 
@@ -184,7 +163,7 @@ void delAwalBarangBelian(address_BB *barangBelian)
 
 	address_BB tempBarangBelian;
 
-	if (isEmptyBarangBelian(*barangBelian))
+	if ((*barangBelian)->next == Nil)
 	{
 		printf("List Kosong");
 	}
