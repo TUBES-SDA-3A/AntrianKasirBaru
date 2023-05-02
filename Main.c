@@ -8,32 +8,42 @@ int main()
 
     // Deklarasi Variabel
     DataBarang dataBarang[MAX_BARANG];
+    address_P headPembeli;
+
+    bool status = true;
     int pilihan;
 
+    // Inisialisasi Persediaan Barang 
+    persediaanBarang(&dataBarang);
+
+    // Alokasi Node
+    alokasiNodePembeli(&headPembeli);
+
     // Algoritma
-    for (;;)
+    while (status)
     {
         system("cls");
-        persediaanBarang(&dataBarang);
         displayMenu();
         scanf(" %d", &pilihan);
         switch (pilihan)
         {
         case 1:
             system("cls");
-            displayListBarang(&dataBarang[MAX_BARANG]);
-
+            displayListBarang(dataBarang, 1);
             break;
 
         case 2:
-
+            system("cls");
+            datangPembeli(&headPembeli, &dataBarang);
+            getch();
+            break;
+        case 5:
+            status = false;
             break;
 
         default:
             break;
         }
-
-        getchar();
     }
     return 0;
 }
