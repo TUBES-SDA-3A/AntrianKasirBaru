@@ -35,13 +35,9 @@ void tampilanStruk(address_P pembeli, DataBarang dataBarang[MAX_BARANG])
     char kodeStruk[10], idPembeli[5];
     int noBarang = 1, kodeBarang;
 
-    printf("\t\t\t\tSUPERMARKET JAYA\n");
-    printf("\t\t\t");
-    for (int i = 0; i < 30; i++)
-    {
-        printf("-");
-    }
-    printf("\n");
+    koor(45, 3), printf("SUPERMARKET JAYA");
+    koor(44, 4), printf("---------------------");
+    koor(45, 5), printf("\n");
     printf("\t\t\t%s\n\n", idPembeli[5]);
     printf("\t\t\t%s\n\n", pembeli->namaPembeli);
     while (pembeli->barangBelian->next != Nil)
@@ -61,7 +57,6 @@ void tampilanStruk(address_P pembeli, DataBarang dataBarang[MAX_BARANG])
     printf("\t\t\t%s\n\n", kodeStruk[10]);
     printf("\t\tTekan apa saja untuk kembali ke menu utama");
     getchar();
-    displayMenu();
 }
 
 void displayListBarang(DataBarang dataBarang[MAX_BARANG], int flagListBarang)
@@ -129,10 +124,47 @@ void kotakPersediaanBarang(int flagKotak)
         koor(91, y), printf("%c", 179);
     }
 
-    koor(33, y+1), printf("%c", 192);
+    koor(33, y + 1), printf("%c", 192);
     for (int i = 0; i < 57; i++)
     {
         printf("%c", 196);
     }
-    koor(91, y+1), printf("%c", 217);
+    koor(91, y + 1), printf("%c", 217);
+}
+
+void tampilListAntrian(DataKasir kasir[3], int flagAntrian)
+{
+    int x = 10, i;
+    address_A transA;
+    koor(45, 1), printf("Antrian di kasir Supermarket Jaya");
+    for (i = 0; i < 3; i++)
+    {
+        int j = 1;
+        int y = 3;
+
+        koor(x, y), printf("Kasir %d (%s)", kasir[i].Nomor, kasir[i].namaKasir);
+
+        if (kasir[i].next == Nil)
+        {
+            koor(x, y + 2), printf("Antrian masih kosong");
+        }
+        else
+        {
+            transA = kasir[i].next;
+            y = y + 1;
+            while ((transA) != Nil)
+            {
+                y++;
+                koor(x, y), printf("%d. %s", j, transA->Pembeli->namaPembeli);
+                transA = (transA)->next;
+                j++;
+            }
+        }
+        x = x + 40;
+    }
+    if (flagAntrian == 1)
+    {
+        koor(5, 25), printf("Ketik apapun untuk kembali ke menu!!");
+        getch();
+    }
 }

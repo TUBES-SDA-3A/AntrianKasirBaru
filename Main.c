@@ -2,19 +2,17 @@
 
 int main()
 {
-    // Pengaturan ukuran console dengan lebar 1000 dan tinggi 600
-    HWND hWnd = GetConsoleWindowNT();
-    MoveWindow(hWnd, 180, 50, 1000, 600, TRUE);
-
     // Deklarasi Variabel
     DataBarang dataBarang[MAX_BARANG];
+    DataKasir kasir[3];
     address_P headPembeli;
 
     bool status = true;
     int pilihan;
 
-    // Inisialisasi Persediaan Barang 
+    // Inisialisasi
     persediaanBarang(&dataBarang);
+    initKasir(&kasir);
 
     // Alokasi Node
     alokasiNodePembeli(&headPembeli);
@@ -34,14 +32,25 @@ int main()
 
         case 2:
             system("cls");
-            datangPembeli(&headPembeli, &dataBarang);
-            getch();
+            datangPembeli(&headPembeli, &dataBarang, &kasir);
             break;
+
+        case 3:
+            system("cls");
+            tampilListAntrian(kasir, 1);
+            break;
+
+        case 4:
+            system("cls");
+            prosesAntrian(&kasir);
         case 5:
+
             status = false;
             break;
 
         default:
+            koor(43, 22), printf("Masukan tidak valid. Silahkan masukan kembali!");
+            getch();
             break;
         }
     }
