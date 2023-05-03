@@ -1,29 +1,37 @@
 #include "Header.h"
 
 /****************** Datang Pembeli *******************/
-void datangPembeli(address_P *headPembeli, DataBarang (*dataBarang)[MAX_BARANG])
+void datangPembeli(address_P *headPembeli, DataBarang (*dataBarang)[MAX_BARANG], DataKasir (*kasir)[3])
 {
 	infochar namaPembeli = (infochar)malloc(sizeof(infochar));
-	int uangPembeli;
+	int noKasir;
 	address_P newPembeli;
 
 	alokasiNodePembeli(&newPembeli);
 
 	banner();
 
-	koor(40, 15), printf("Masukan nama untuk pembeli : ");
+	koor(40, 16), printf("Masukan nama untuk pembeli : ");
 	scanf(" %[^\n]", namaPembeli);
 
-	koor(40, 16), printf("Masukan uang yang dimiliki pembeli : ");
-	scanf("%d", &uangPembeli);
-
-	createNodePembeli(&(*headPembeli), &newPembeli, namaPembeli, uangPembeli);
 	beliBarang(&(*dataBarang), &newPembeli);
+
+	system("cls");
+	tampilListAntrian((*kasir), 2);
+	koor(40, 25), printf("Masukan No kasir yang di pilih (1-3): ");
+	scanf("%d", &noKasir);
+
+	createNodePembeli(&(*headPembeli), &newPembeli, namaPembeli, noKasir);
+	masukAntrian(&(*kasir)[noKasir - 1], newPembeli);
+
+	koor(35, 10), printf("%s sudah masuk kedalam antrian pada kasir %d", newPembeli->namaPembeli, newPembeli->noKasir);
+	getch();
 }
 
 void beliBarang(DataBarang (*dataBarang)[MAX_BARANG], address_P *newPembeli)
 {
 	int kodeBarang, jumlahBarang, pilihanLagi = 1;
+	int tempHargaTotal = 0;
 
 	alokasiNodeBarangBelian(&(*newPembeli)->barangBelian);
 
@@ -38,28 +46,29 @@ void beliBarang(DataBarang (*dataBarang)[MAX_BARANG], address_P *newPembeli)
 		koor(45, 18), printf("Masukan jumlah barang : ");
 		scanf("%d", &jumlahBarang);
 
-		if ((*dataBarang)[kodeBarang].stok > 0 || (*dataBarang)[kodeBarang].stok >= jumlahBarang)
+		if ((*dataBarang)[kodeBarang].stok > 0 && (*dataBarang)[kodeBarang].stok >= jumlahBarang)
 		{
 			(*newPembeli)->hargaTotal = (*dataBarang)[kodeBarang].harga * jumlahBarang;
 			(*dataBarang)[kodeBarang].stok = (*dataBarang)[kodeBarang].stok - jumlahBarang;
 			createNodeBarangBelian(&(*newPembeli)->barangBelian, (*dataBarang)[kodeBarang].nama, jumlahBarang);
-			koor(40, 20), printf("%s berhasil ditambahkan ke dalam keranjang.", (*dataBarang)[kodeBarang].nama);
+			koor(30, 20), printf("%s berhasil ditambahkan ke dalam keranjang.", (*dataBarang)[kodeBarang].nama);
+			system("cls");
+			koor(45, 10), printf("Ingin pesan lagi ? ");
+			koor(45, 11), printf("1. YA");
+			koor(45, 12), printf("2. Tidak");
+			koor(45, 13), printf("Masukan pilihan : ");
+			scanf("%d", &pilihanLagi);
 		}
 		else if ((*dataBarang)[kodeBarang].stok < 0)
 		{
-			koor(40, 20), printf("Maaf persediaan habis. Silahkan beli yang lain!!");
+			koor(30, 20), printf("Maaf persediaan habis. Silahkan beli yang lain!!");
+			getch();
 		}
 		else if ((*dataBarang)[kodeBarang].stok < jumlahBarang)
 		{
-			koor(40, 20), printf("Maaf persediaan kurang. Silahkan ubah jumlah barang atau beli yang lain!!");
+			koor(25, 20), printf("Maaf persediaan kurang. Silahkan ubah jumlah barang atau beli yang lain!!");
+			getch();
 		}
-
-		system("cls");
-		koor(45, 10), printf("Ingin pesan lagi ? ");
-		koor(45, 11), printf("1. YA");
-		koor(45, 12), printf("2. Tidak");
-		koor(45, 13), printf("Masukan pilihan : ");
-		scanf("%d", &pilihanLagi);
 	}
 }
 
@@ -67,23 +76,21 @@ void beliBarang(DataBarang (*dataBarang)[MAX_BARANG], address_P *newPembeli)
 void alokasiNodePembeli(address_P *tempPembeli)
 {
 	*tempPembeli = (address_P)malloc(sizeof(Pembeli));
+	(*tempPembeli)->barangBelian = Nil;
 	(*tempPembeli)->next = Nil;
 }
 
-void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar Nama_Pembeli, int uangPembeli)
+void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar namaPembeli, int noKasir)
 {
-	/* 	I.S : headPembeli dan newPembeli belum memiliki nilai atau masih kosong, dan address_BB q, infochar Nama_Pembeli, int No_Kasir, dan int uangPembeli diisi dengan nilai yang sesuai.
+	/* 	I.S : headPembeli dan newPembeli belum memiliki nilai atau masih kosong, dan address_BB q, infochar namaPembeli, int No_Kasir, dan int uangPembeli diisi dengan nilai yang sesuai.
 		F.S : terbentuknya sebuah node baru pada linked list pembeli dengan informasi yang sudah diisi dan disambungkan ke linked list.
 	*/
 
 	address_P Traversal;
 
-	(*newPembeli)->next = Nil;
-	(*newPembeli)->barangBelian = Nil;
-	(*newPembeli)->namaPembeli = Nama_Pembeli;
-	(*newPembeli)->noKasir = 0;
-	(*newPembeli)->hargaTotal = 0;
-	(*newPembeli)->uangPembeli = uangPembeli;
+	(*newPembeli)->namaPembeli = namaPembeli;
+	(*newPembeli)->noKasir = noKasir;
+	(*newPembeli)->uangPembeli = 0;
 
 	if ((*headPembeli)->next == Nil)
 	{
@@ -123,7 +130,7 @@ void alokasiNodeBarangBelian(address_BB *tempBarangBelian)
 }
 
 void createNodeBarangBelian(address_BB *headBarangBelian, infochar namaBarang, int jumlahBarang)
-{ 
+{
 	/* I.S : - headAntrian merupakan pointer ke list antrian yang awalnya kosong atau NULL.
 			 - newAntrian merupakan pointer yang belum dialokasikan ke memori.
 			 - Pembeli merupakan data pembeli yang akan ditambahkan ke dalam node antrian.
@@ -177,197 +184,72 @@ void delAwalBarangBelian(address_BB *barangBelian)
 }
 
 /****************List Antrian****************/
-bool isEmptyAntrian(address_A p)
+void initKasir(DataKasir (*kasir)[3])
 {
-	/* I.S : belum mengetahui apakah address_A kosong atau tidak.
-	   F.S : address_A p merupakan alamat dari head dari suatu linked list address_A yang akan dicek apakah kosong atau tidak.
-	*/
-
-	if (p == NULL)
-	{
-		return 1;
-	}
-	else
-	{
-		return 0;
-	}
+	(*kasir)[0].namaKasir = "Daniel Reinhard";
+	(*kasir)[0].Nomor = 1;
+	(*kasir)[0].next = Nil;
+	(*kasir)[1].namaKasir = "Hasna Fitriyani";
+	(*kasir)[1].Nomor = 2;
+	(*kasir)[1].next = Nil;
+	(*kasir)[2].namaKasir = "Muhammad Azhar";
+	(*kasir)[2].Nomor = 3;
+	(*kasir)[2].next = Nil;
 }
 
-void createNodeAntrian(address_A *headAntrian, address_A *newAntrian, address_P newPembeli)
+void alokasiAntrian(address_A *tempAntrian)
+{
+	*tempAntrian = (address_A)malloc(sizeof(Antrian));
+	(*tempAntrian)->next = Nil;
+	(*tempAntrian)->Pembeli = Nil;
+}
+
+void masukAntrian(DataKasir *kasir, address_P newPembeli)
 {
 	/* I.S : - headAntrian: pointer menuju node pertama dari list antrian
-			 - newAntrian: pointer untuk menunjuk pada node baru yang akan dibuat
-			 - Pembeli: pointer menuju pada node pembeli
+			 - newPembeli: pointer menuju pada node pembeli
 	   F.S : Jika newAntrian berhasil dialokasikan, maka newAntrian akan menjadi node baru pada list antrian yang menunjuk ke Pembeli.
 			 Jika headAntrian masih kosong, maka headAntrian akan menunjuk ke newAntrian.
 			 Jika headAntrian tidak kosong, maka newAntrian akan ditambahkan pada akhir list antrian.
 	*/
 
-	address_A transA;
+	address_A tempAntrian;
 
-	*newAntrian = (address_A)malloc(sizeof(Antrian)); // membuat node sebesar list antrian
-
-	if (isEmptyAntrian(*newAntrian))
+	if ((*kasir).next != Nil)
 	{
-		printf("Node Belum di Alokasi\n");
-	}
-	else
-	{
-		(*newAntrian) = Nil;				 // next yang ditunjuk p disii Nil
-		(*newAntrian)->Pembeli = newPembeli; // nama yang ditunjuk p diisi nama
-	}
-
-	if (isEmptyAntrian(*headAntrian))
-	{
-		*headAntrian = *newAntrian; // pointer diisi pNew
-	}
-	else
-	{
-		transA = *headAntrian;
-		while (!isEmptyAntrian((transA)->next))
-		{							 // memeriksa next A apakah kosong
-			transA = (transA)->next; // A diisi next A
-		}
-		(transA)->next = *newAntrian;
-	}
-}
-
-void tampilListAntrian(address_A p)
-{
-	// Menampilkan seluruh isi Linked List, p parameter passing by value
-	int i = 1;
-
-	if (isEmptyAntrian(p))
-	{
-		printf("List Kosong\n");
-	}
-	else
-	{
-		while (!isEmptyAntrian(p))
+		tempAntrian = (*kasir).next;
+		while ((tempAntrian)->next != Nil)
 		{
-			printf("%d. %s", i, p->Pembeli->namaPembeli); // print yang ada di antrian
-			p = (p)->next;								  // p diisi next p
-			if (p != Nil)
-			{ // jika p tidak sama dengan nil
-				printf("\n");
-			}
-			i++; // lakukan ini sebanyak i
+			tempAntrian = (tempAntrian)->next;
 		}
-		printf("\n");
+		alokasiAntrian(&(tempAntrian)->next);
+		(tempAntrian)->next->Pembeli = newPembeli;
+		(tempAntrian)->next->next = Nil;
+	}
+	else
+	{
+		alokasiAntrian(&tempAntrian);
+		tempAntrian->Pembeli = newPembeli;
+		tempAntrian->next = Nil;
+		(*kasir).next = tempAntrian;
 	}
 }
 
-void delAwalAntrian(address_A *p)
+void prosesAntrian(DataKasir (*kasir)[3])
 {
 	address_A tempAntrian;
 
-	if (isEmptyAntrian(*p))
-	{								// memeriksa apakah antrian kosong
-		printf("Antrian Kosong\n"); // jika kosong print
-	}
-	else
-	{
-		tempAntrian = *p;	// Antrian diisi address p
-		*p = (*p)->next;	// pointer diisi next p
-		tempAntrian = NULL; // A diisi NIL
-		free(tempAntrian);	// hampus A dari antrian
-	}
-}
-
-void DelPBarangBelian(address_BB *BB, infochar X)
-/* IS : L sembarang */
-/* FS : Jika ada elemen list beraddress P, dengan Info(P) = X */
-/* 	Maka P dihapus dari list dan di dealokasi */
-/* Jika tidak ada elemen list dengan Info(P) = X, maka list tetap */
-/* List mungkin menjadi kosong karena penghapusan */
-{
-	/* Kamus Lokal */
-	address_BB TransBB, Prec;
-	bool found = false;
-	/* Algoritma */
-	Prec = Nil;
-	TransBB = *BB;
-	while ((TransBB != Nil) && (!found))
-	{
-		if (strcmp((TransBB)->namaBarang, X) == 0)
-		{
-			found = true;
-		}
-		else
-		{
-			Prec = TransBB;
-			TransBB = (TransBB)->next;
-		}
-	}
-
-	if (found)
-	{
-		if (Prec == Nil && (TransBB)->next == Nil) /* Hanya 1 elemen */
-		{
-			TransBB->next = Nil;
-		}
-		else if (Prec == Nil) /* Ketemu di elemen 1*/
-		{
-			*BB = (TransBB)->next;
-			TransBB->next = Nil;
-		}
-		else /* Ketemu di elemen list yang ditengah/akhir */
-		{
-			(Prec)->next = (TransBB)->next;
-			TransBB->next = Nil;
-		}
-		free(TransBB);
-	}
-}
-
-void DelPAntrian(address_A *headAntrian, infochar namaPembeli)
-/* IS : L sembarang */
-/* FS : Jika ada elemen list beraddress P, dengan Info(P) = X */
-/* 	Maka P dihapus dari list dan di dealokasi */
-/* Jika tidak ada elemen list dengan Info(P) = X, maka list tetap */
-/* List mungkin menjadi kosong karena penghapusan */
-{
-	/* Kamus Lokal */
-	address_A Prec, transA;
-	bool found = false;
-	/* Algoritma */
-	Prec = Nil;
-	transA = (*headAntrian);
-	while ((transA != Nil) && (!found))
-	{
-		if (strcmp((transA)->Pembeli->namaPembeli, namaPembeli) == 0)
-		{
-			found = true;
-		}
-		else
-		{
-			Prec = transA;
-			transA = (transA)->next;
-		}
-	}
-
-	if (found)
-	{
-		if (Prec == Nil && (transA)->next == Nil) /* Hanya 1 elemen */
-		{
-			(transA)->next = Nil;
-		}
-		else if (Prec == Nil) /* Ketemu di elemen 1*/
-		{
-			(*headAntrian) = (transA)->next;
-			(transA)->next = Nil;
-		}
-		else /* Ketemu di elemen list yang ditengah/akhir */
-		{
-			(Prec)->next = (transA)->next;
-			(transA)->next = Nil;
-		}
-		free(transA);
-	}
-	else
-	{
-		printf("Nama pembeli tidak ditemukan didalam antrian");
-	}
+	// if ((*antrian)->next)
+	// {
+	// 	printf("Antrian Kosong\n");
+	// }
+	// else
+	// {
+	// 	tempAntrian = *antrian;
+	// 	*antrian = (*antrian)->next;
+	// 	tempAntrian = NULL;
+	// 	free(tempAntrian);
+	// }
 }
 
 int searchBarang(DataBarang dataBarang[MAX_BARANG], infochar namaBarang)

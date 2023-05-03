@@ -1,7 +1,6 @@
 /*
 Kelompok : 3A
 Anggota :
-        * Daniel Reinhard Pandapotan Butar butar 221524006
         * Hasna Fitriyani Khairunissa  221524011
         * Muhammad Azharuddin Hamid  221524018
 */
@@ -58,35 +57,31 @@ typedef struct Kasir
     int Nomor;
     address_A next;
     infochar namaKasir;
-} dataKasir;
+} DataKasir;
 
-void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar Nama_Pembeli, int uangPembeli);
+void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar namaPembeli, int noKasir);
 void alokasiNodePembeli(address_P *tempPembeli);
-void datangPembeli(address_P *headPembeli, DataBarang (*dataBarang)[MAX_BARANG]);
+void datangPembeli(address_P *headPembeli, DataBarang (*dataBarang)[MAX_BARANG], DataKasir (*kasir)[3]);
 void beliBarang(DataBarang (*dataBarang)[MAX_BARANG], address_P *newPembeli);
 void persediaanBarang(DataBarang (*dataBarang)[MAX_BARANG]);
 void alokasiNodeBarangBelian(address_BB *tempBarangBelian);
 void createNodeBarangBelian(address_BB *headBarangBelian, infochar namaBarang, int jumlahBarang);
 void delAwalBarangBelian(address_BB *barangBelian);
-bool isEmptyAntrian(address_A p);
-void createNodeAntrian(address_A *headAntrian, address_A *newAntrian, address_P Pembeli);
-void tampilListAntrian(address_A p);
-void delAwalAntrian(address_A *p);
-void DelPBarangBelian(address_BB *BB, infochar X);
-void DelPAntrian(address_A *Antrian, infochar namaPembeli);
+void alokasiAntrian(address_A *tempAntrian);
+void masukAntrian(DataKasir *kasir, address_P Pembeli);
+void initKasir(DataKasir (*kasir)[3]);
+void prosesAntrian(DataKasir (*kasir)[3]);
 int searchBarang(DataBarang dataBarang[MAX_BARANG], infochar namaBarang);
 
-// set nilai untuk idPembeli
-// void generateKodeStruk(kodeStruk, idPembeli);
-
-
+// Tampilan
 void banner();
 void displayMenu();
 void displayListBarang(DataBarang dataBarang[MAX_BARANG], int flagListBarang);
+void tampilListAntrian(DataKasir kasir[3], int flagAntrian);
 void kotakPersediaanBarang(int flagKotak);
 
+// Teknis
 void koor(int x, int y);
 void setColor(unsigned short color);
-HWND WINAPI GetConsoleWindowNT(void);
 
 #endif
