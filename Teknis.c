@@ -16,4 +16,3 @@ void setColor(unsigned short color)
     SetConsoleTextAttribute(hCon,color);
 }
 
-

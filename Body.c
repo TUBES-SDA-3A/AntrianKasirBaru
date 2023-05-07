@@ -24,16 +24,17 @@ void datangPembeli(address_P *headPembeli, DataBarang (*dataBarang)[MAX_BARANG],
 	createNodePembeli(&(*headPembeli), &newPembeli, namaPembeli, noKasir);
 	masukAntrian(&(*kasir)[noKasir - 1], newPembeli);
 
+	system("cls");
 	koor(35, 10), printf("%s sudah masuk kedalam antrian pada kasir %d", newPembeli->namaPembeli, newPembeli->noKasir);
+	koor(5, 25), printf("Ketik apapun untuk kembali ke menu!!");
 	getch();
 }
 
 void beliBarang(DataBarang (*dataBarang)[MAX_BARANG], address_P *newPembeli)
 {
 	int kodeBarang, jumlahBarang, pilihanLagi = 1;
-	int tempHargaTotal = 0;
 
-	alokasiNodeBarangBelian(&(*newPembeli)->barangBelian);
+	// alokasiNodeBarangBelian(&(*newPembeli)->barangBelian);
 
 	while (pilihanLagi == 1)
 	{
@@ -48,7 +49,7 @@ void beliBarang(DataBarang (*dataBarang)[MAX_BARANG], address_P *newPembeli)
 
 		if ((*dataBarang)[kodeBarang].stok > 0 && (*dataBarang)[kodeBarang].stok >= jumlahBarang)
 		{
-			(*newPembeli)->hargaTotal = (*dataBarang)[kodeBarang].harga * jumlahBarang;
+			(*newPembeli)->hargaTotal += (*dataBarang)[kodeBarang].harga * jumlahBarang;
 			(*dataBarang)[kodeBarang].stok = (*dataBarang)[kodeBarang].stok - jumlahBarang;
 			createNodeBarangBelian(&(*newPembeli)->barangBelian, (*dataBarang)[kodeBarang].nama, jumlahBarang);
 			koor(30, 20), printf("%s berhasil ditambahkan ke dalam keranjang.", (*dataBarang)[kodeBarang].nama);
@@ -77,6 +78,7 @@ void alokasiNodePembeli(address_P *tempPembeli)
 {
 	*tempPembeli = (address_P)malloc(sizeof(Pembeli));
 	(*tempPembeli)->barangBelian = Nil;
+	(*tempPembeli)->hargaTotal = 0;
 	(*tempPembeli)->next = Nil;
 }
 
@@ -90,7 +92,6 @@ void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar n
 
 	(*newPembeli)->namaPembeli = namaPembeli;
 	(*newPembeli)->noKasir = noKasir;
-	(*newPembeli)->uangPembeli = 0;
 
 	if ((*headPembeli)->next == Nil)
 	{
@@ -143,11 +144,10 @@ void createNodeBarangBelian(address_BB *headBarangBelian, infochar namaBarang, i
 
 	alokasiNodeBarangBelian(&newBarangBelian);
 
-	(newBarangBelian)->next = Nil;
 	(newBarangBelian)->namaBarang = namaBarang;
 	(newBarangBelian)->jumlahBarang = jumlahBarang;
 
-	if ((*headBarangBelian)->next == Nil)
+	if ((*headBarangBelian) == Nil)
 	{
 		*headBarangBelian = newBarangBelian;
 	}
@@ -158,28 +158,8 @@ void createNodeBarangBelian(address_BB *headBarangBelian, infochar namaBarang, i
 		{
 			transBB = (transBB)->next;
 		}
-		transBB = newBarangBelian;
-	}
-}
-
-void delAwalBarangBelian(address_BB *barangBelian)
-{
-	/* I.S : Terdapat sebuah node yang menjadi inputan fungsi Del_Awal_BarangBelian, dan pada awalnya node tersebut menunjuk ke head dari sebuah list.
-	   F.S : Node pertama dari list telah dihapus dan nilai nama barang dari node tersebut disimpan pada variabel X.
-	*/
-
-	address_BB tempBarangBelian;
-
-	if ((*barangBelian)->next == Nil)
-	{
-		printf("List Kosong");
-	}
-	else
-	{
-		tempBarangBelian = *barangBelian;
-		*barangBelian = (*barangBelian)->next;
-		tempBarangBelian = NULL;
-		free(tempBarangBelian);
+		transBB->next = newBarangBelian;
+		transBB->next->next = Nil;
 	}
 }
 
@@ -235,58 +215,53 @@ void masukAntrian(DataKasir *kasir, address_P newPembeli)
 	}
 }
 
-void prosesAntrian(DataKasir (*kasir)[3]) {
-	//proses antrian ini memproses alias menghapus antrian pertama di setiap kasir.
-    for (int i = 0; i < 3; i++) {
-        if ((*kasir)[i].next != Nil) { // cek apakah ada pembeli dalam antrian kasir
-            address_A temp = (*kasir)[i].next;
-            (*kasir)[i].next = temp->next; // hapus pembeli pertama dalam antrian
-            free(temp);
-        }
-    }
+void prosesAntrian(DataKasir (*kasir)[3], DataBarang dataBarang[MAX_BARANG])
+{
+	int uangPembeli, x;
+	bool status;
+
+	// proses antrian ini memproses alias menghapus antrian pertama di setiap kasir.
+	for (int i = 0; i < 3; i++)
+	{
+		status = true;
+		x = 4 + (i * 40);
+		if ((*kasir)[i].next != Nil) // cek apakah ada pembeli dalam antrian kasir
+		{
+			address_A tempAntrian = (*kasir)[i].next;
+			while (status)
+			{
+				koor(x, 14), printf("Harga Total %s  sebesar %d", tempAntrian->Pembeli->namaPembeli, tempAntrian->Pembeli->hargaTotal);
+				koor(x, 15), printf("Masukan uang pembayaran : ");
+				scanf("%d", &uangPembeli);
+				if (tempAntrian->Pembeli->hargaTotal > uangPembeli)
+				{
+					koor(x, 16), printf("Uang tidak cukup.");
+					koor(x, 17), printf("Tekan apapun untuk masukan ulang!");
+					getch();
+				}
+				else
+				{
+					status = false;
+				}
+				// Menghapus tampilan masukan uang pembeli
+				koor(x, 14), printf("                                                 ");
+				koor(x, 15), printf("                                                 ");
+				koor(x, 16), printf("                                                 ");
+				koor(x, 17), printf("                                                 ");
+			}
+
+			tampilanStruk(tempAntrian->Pembeli, dataBarang, (*kasir)[i].namaKasir, uangPembeli, x);
+			(*kasir)[i].next = tempAntrian->next; // Antrian kedua maju menjadi antrian pertama
+			free(tempAntrian);					  // hapus pembeli pertama dalam antrian
+		}
+		else
+		{
+			koor(x, 10), printf("Belum ada antrian didalam kasir!");
+		}
+	}
+	koor(80, 2), printf("Ketik apapun untuk kembali ke menu!!");
+	getch();
 }
-
-// void cetakStruk(DataKasir (*kasir)[3]) {
-	//untuk cetak struk belum terkoneksi dengan antrian
-//     for (int i = 0; i < 3; i++) {
-//         if ((*kasir)[i].next != Nil) { // cek apakah ada pembeli dalam antrian kasir
-//             printf("=========================================\n");
-//             printf("              Struk Belanja\n");
-//             printf("=========================================\n");
-//             printf("Nama Kasir: %s\n", (*kasir)[i].namaKasir);
-//             address_P temp = (*kasir)[i].next->Pembeli;
-//             printf("Nama Pembeli: %s\n", temp->namaPembeli);
-//             printf("No Kasir: %d\n", temp->noKasir);
-//             printf("=========================================\n");
-//             printf("Barang\t\tJumlah\t\tHarga Satuan\n");
-//             printf("-----------------------------------------\n");
-//             address_BB current = temp->barangBelian;
-//             while (current != Nil) {
-//                 printf("%s\t\t%d\t\tRp %d\n", current->namaBarang, current->jumlahBarang, getHarga(current->namaBarang));
-//                 current = current->next;
-//             }
-//             printf("=========================================\n");
-//             printf("Total Harga: Rp %d\n", temp->hargaTotal);
-//             printf("Bayar: Rp %d\n", temp->uangPembeli);
-//             printf("Kembalian: Rp %d\n", temp->uangPembeli - temp->hargaTotal);
-//             printf("=========================================\n");
-//         }
-//     }
-// }
-
-// void prosesAntrian(DataKasir (*kasir)[3]) {
-	// proses antrian yang telah adding modul cetakStruk
-//     for (int i = 0; i < 3; i++) {
-//         if ((*kasir)[i].next != Nil) { // cek apakah ada pembeli dalam antrian kasir
-//             address_A temp = (*kasir)[i].next;
-//             (*kasir)[i].next = temp->next; // hapus pembeli pertama dalam antrian
-//             cetakStruk(kasir); // cetak struk setelah pembeli diproses
-//             free(temp);
-//         }
-//     }
-// }
-
-
 
 int searchBarang(DataBarang dataBarang[MAX_BARANG], infochar namaBarang)
 {
