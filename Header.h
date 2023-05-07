@@ -15,6 +15,8 @@ Anggota :
 #include <malloc.h>
 #include <stdbool.h>
 #include <windows.h>
+#include <time.h>
+#include <unistd.h>
 #define MAX_BARANG 10
 
 typedef const char * infochar;
@@ -52,12 +54,42 @@ typedef struct Antrian
     address_A next;
 } Antrian;
 
+typedef struct StrukBelanja
+{
+    //Struct data tambahan untuk modul cetakStruk
+    infochar namaPembeli;
+    infochar namaKasir;
+    address_BB barangBelian;
+    int hargaTotal;
+    int uangPembeli;
+    int kembalian;
+} StrukBelanja;
+
 typedef struct Kasir
 {
     int Nomor;
     address_A next;
+    StrukBelanja strukBelanja;
     infochar namaKasir;
 } DataKasir;
+
+// typedef struct Struk
+// {
+//     char namaPembeli[50];
+//     char namaKasir[50];
+//     char namaBarang[50];
+//     int hargaBarang;
+//     int jumlahBarang;
+//     int uangBayar;
+//     int totalHarga;
+//     int kembalian;
+//     time_t timestamp;
+// } Struk;
+
+// typedef struct {
+//     char namaKasir[50];
+//     int idKasir;
+// } Kasir;
 
 void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar namaPembeli, int noKasir);
 void alokasiNodePembeli(address_P *tempPembeli);
@@ -71,14 +103,17 @@ void alokasiAntrian(address_A *tempAntrian);
 void masukAntrian(DataKasir *kasir, address_P Pembeli);
 void initKasir(DataKasir (*kasir)[3]);
 void prosesAntrian(DataKasir (*kasir)[3]);
+
 int searchBarang(DataBarang dataBarang[MAX_BARANG], infochar namaBarang);
 
 // Tampilan
+void credit();
 void banner();
 void displayMenu();
 void displayListBarang(DataBarang dataBarang[MAX_BARANG], int flagListBarang);
 void tampilListAntrian(DataKasir kasir[3], int flagAntrian);
 void kotakPersediaanBarang(int flagKotak);
+void closeProgram();
 
 // Teknis
 void koor(int x, int y);
