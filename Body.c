@@ -235,22 +235,55 @@ void masukAntrian(DataKasir *kasir, address_P newPembeli)
 	}
 }
 
-void prosesAntrian(DataKasir (*kasir)[3])
-{
-	address_A tempAntrian;
-
-	// if ((*antrian)->next)
-	// {
-	// 	printf("Antrian Kosong\n");
-	// }
-	// else
-	// {
-	// 	tempAntrian = *antrian;
-	// 	*antrian = (*antrian)->next;
-	// 	tempAntrian = NULL;
-	// 	free(tempAntrian);
-	// }
+void prosesAntrian(DataKasir (*kasir)[3]) {
+    for (int i = 0; i < 3; i++) {
+        if ((*kasir)[i].next != Nil) { // cek apakah ada pembeli dalam antrian kasir
+            address_A temp = (*kasir)[i].next;
+            (*kasir)[i].next = temp->next; // hapus pembeli pertama dalam antrian
+            free(temp);
+        }
+    }
 }
+
+// void cetakStruk(DataKasir (*kasir)[3]) {
+//     for (int i = 0; i < 3; i++) {
+//         if ((*kasir)[i].next != Nil) { // cek apakah ada pembeli dalam antrian kasir
+//             printf("=========================================\n");
+//             printf("              Struk Belanja\n");
+//             printf("=========================================\n");
+//             printf("Nama Kasir: %s\n", (*kasir)[i].namaKasir);
+//             address_P temp = (*kasir)[i].next->Pembeli;
+//             printf("Nama Pembeli: %s\n", temp->namaPembeli);
+//             printf("No Kasir: %d\n", temp->noKasir);
+//             printf("=========================================\n");
+//             printf("Barang\t\tJumlah\t\tHarga Satuan\n");
+//             printf("-----------------------------------------\n");
+//             address_BB current = temp->barangBelian;
+//             while (current != Nil) {
+//                 printf("%s\t\t%d\t\tRp %d\n", current->namaBarang, current->jumlahBarang, getHarga(current->namaBarang));
+//                 current = current->next;
+//             }
+//             printf("=========================================\n");
+//             printf("Total Harga: Rp %d\n", temp->hargaTotal);
+//             printf("Bayar: Rp %d\n", temp->uangPembeli);
+//             printf("Kembalian: Rp %d\n", temp->uangPembeli - temp->hargaTotal);
+//             printf("=========================================\n");
+//         }
+//     }
+// }
+
+// void prosesAntrian(DataKasir (*kasir)[3]) {
+//     for (int i = 0; i < 3; i++) {
+//         if ((*kasir)[i].next != Nil) { // cek apakah ada pembeli dalam antrian kasir
+//             address_A temp = (*kasir)[i].next;
+//             (*kasir)[i].next = temp->next; // hapus pembeli pertama dalam antrian
+//             cetakStruk(kasir); // cetak struk setelah pembeli diproses
+//             free(temp);
+//         }
+//     }
+// }
+
+
 
 int searchBarang(DataBarang dataBarang[MAX_BARANG], infochar namaBarang)
 {

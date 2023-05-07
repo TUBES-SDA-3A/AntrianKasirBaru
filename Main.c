@@ -6,6 +6,11 @@ int main()
     DataBarang dataBarang[MAX_BARANG];
     DataKasir kasir[3];
     address_P headPembeli;
+    // Kasir kasir;
+    Pembeli pembeli;
+    DataBarang barangBelian;
+    int uangBayar, kembalian;
+
 
     bool status = true;
     int pilihan;
@@ -16,6 +21,7 @@ int main()
 
     // Alokasi Node
     alokasiNodePembeli(&headPembeli);
+    credit();
 
     // Algoritma
     while (status)
@@ -43,10 +49,15 @@ int main()
         case 4:
             system("cls");
             prosesAntrian(&kasir);
-        case 5:
-
-            status = false;
             break;
+
+        case 5:
+            closeProgram();
+            break;
+
+        // case 6:
+        //     tampilanStruk(kasir, pembeli, barangBelian, uangBayar, kembalian);
+        //     break;
 
         default:
             koor(43, 22), printf("Masukan tidak valid. Silahkan masukan kembali!");
