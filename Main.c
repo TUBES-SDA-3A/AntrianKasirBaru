@@ -55,10 +55,6 @@ int main()
             closeProgram();
             break;
 
-        // case 6:
-        //     tampilanStruk(kasir, pembeli, barangBelian, uangBayar, kembalian);
-        //     break;
-
         default:
             koor(43, 22), printf("Masukan tidak valid. Silahkan masukan kembali!");
             getch();

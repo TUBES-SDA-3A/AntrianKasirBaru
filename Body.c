@@ -236,6 +236,7 @@ void masukAntrian(DataKasir *kasir, address_P newPembeli)
 }
 
 void prosesAntrian(DataKasir (*kasir)[3]) {
+	//proses antrian ini memproses alias menghapus antrian pertama di setiap kasir.
     for (int i = 0; i < 3; i++) {
         if ((*kasir)[i].next != Nil) { // cek apakah ada pembeli dalam antrian kasir
             address_A temp = (*kasir)[i].next;
@@ -246,6 +247,7 @@ void prosesAntrian(DataKasir (*kasir)[3]) {
 }
 
 // void cetakStruk(DataKasir (*kasir)[3]) {
+	//untuk cetak struk belum terkoneksi dengan antrian
 //     for (int i = 0; i < 3; i++) {
 //         if ((*kasir)[i].next != Nil) { // cek apakah ada pembeli dalam antrian kasir
 //             printf("=========================================\n");
@@ -273,6 +275,7 @@ void prosesAntrian(DataKasir (*kasir)[3]) {
 // }
 
 // void prosesAntrian(DataKasir (*kasir)[3]) {
+	// proses antrian yang telah adding modul cetakStruk
 //     for (int i = 0; i < 3; i++) {
 //         if ((*kasir)[i].next != Nil) { // cek apakah ada pembeli dalam antrian kasir
 //             address_A temp = (*kasir)[i].next;

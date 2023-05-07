@@ -56,6 +56,7 @@ typedef struct Antrian
 
 typedef struct StrukBelanja
 {
+    //Struct data tambahan untuk modul cetakStruk
     infochar namaPembeli;
     infochar namaKasir;
     address_BB barangBelian;

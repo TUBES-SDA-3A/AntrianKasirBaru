@@ -2,6 +2,7 @@
 
 void credit()
 {
+    // credit program yang berdurasi 5 detik yang muncul di awal program
     koor(30, 5), printf("db   d8b   db d88888b db       .o88b.  .d88b.  .88b  d88. d88888b \n");
     koor(30, 6), printf("88   I8I   88 88'     88      d8P  Y8 .8P  Y8. 88'YbdP`88 88'     \n");
     koor(30, 7), printf("88   I8I   88 88ooooo 88      8P      88    88 88  88  88 88ooooo \n");
@@ -47,11 +48,12 @@ void displayMenu()
 }
 
 // void tampilanStruk(Kasir kasir, Pembeli pembeli, DataBarang barangBelian, int uangBayar, int kembalian) {
-//     // Deklarasi Variabel
+    // di modul ini hanya untuk tampilan struknya saja.
+//     // Disini dilakukan deklarasi Variabel
 //     Struk struk;
 //     time(&struk.timestamp);
 
-//     // Mengisi Data Struk
+//     // Lalu mengisi Data untuk Struknya
 //     strcpy(struk.namaPembeli, pembeli.namaPembeli);
 //     strcpy(struk.namaKasir, kasir.namaKasir);
 //     strcpy(struk.namaBarang, barangBelian.nama);
@@ -61,7 +63,7 @@ void displayMenu()
 //     struk.totalHarga = pembeli.hargaTotal;
 //     struk.kembalian = kembalian;
 
-//     // Menampilkan Struk
+//     // Ini untuk menampilkan Struk
 //     system("cls");
 //     koor(35, 3), printf("=============== SUPERMARKET JAYA ===============");
 //     koor(35, 4), printf("           STRUK PEMBAYARAN BARANG");
@@ -189,7 +191,7 @@ void tampilListAntrian(DataKasir kasir[3], int flagAntrian)
 }
 
 void closeProgram()
-{
+{ // penutup program yang berdurasi 5 detik lalu akan tertutup dengan sendirinya.
     system("cls");
     koor(10, 9), printf("d8b   db d888888b  .o88b. d88888b d888888b  .d88b.  .d8888. d88888b d88888b db    db  .d88b.  db    db \n");
     koor(10, 10), printf("888o  88   `88'   d8P  Y8 88'     `~~88~~' .8P  Y8. 88'  YP 88'     88'     `8b  d8' .8P  Y8. 88    88 \n");
