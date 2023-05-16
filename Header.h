@@ -93,4 +93,6 @@ void closeProgram();
 void koor(int x, int y);
 void setColor(unsigned short color);
 
+
+
 #endif
