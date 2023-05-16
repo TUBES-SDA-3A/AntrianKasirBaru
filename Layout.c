@@ -39,19 +39,18 @@ void banner()
 void displayMenu()
 {
     banner();
-    koor(45, 14), printf("1. Persediaan stok barang");
-    koor(45, 15), printf("2. Datang pembeli baru");
-    koor(45, 16), printf("3. Tampil antrian kasir");
-    koor(45, 17), printf("4. Proses antrian semua kasir");
-    koor(45, 18), printf("5. Tutup Toko");
+    koor(45, 14), printf("1. Persediaan Stok Barang");
+    koor(45, 15), printf("2. Mengantrikan Pembeli");
+    koor(45, 16), printf("3. Menampilkan Pembeli pada Antrian");
+    koor(45, 17), printf("4. Melayani Pembeli");
+    koor(45, 18), printf("5. Keluar Program");
     koor(45, 20), printf("Masukan Pilihan : ");
 }
 
-
-void displayListBarang(DataBarang dataBarang[MAX_BARANG], int flagListBarang)
+void displayPersediaanBarang(DataBarang dataBarang[MAX_BARANG], int flagPersediaanBarang)
 {
     int y;
-    if (flagListBarang == 1)
+    if (flagPersediaanBarang == 1)
     {
         y = 8;
     }
@@ -74,7 +73,7 @@ void displayListBarang(DataBarang dataBarang[MAX_BARANG], int flagListBarang)
         koor(85, y), printf("%d", dataBarang[i].harga);
     }
 
-    if (flagListBarang == 1)
+    if (flagPersediaanBarang == 1)
     {
         kotakPersediaanBarang(1);
         koor(5, 25), printf("Ketik apapun untuk kembali ke menu!!");
@@ -121,6 +120,40 @@ void kotakPersediaanBarang(int flagKotak)
     koor(91, y + 1), printf("%c", 217);
 }
 
+void displayListKeranjang(Pembeli pembeli)
+{
+    int i = 1;
+    address_K traversal = pembeli.Keranjang;
+    koor(3, 6), printf("%c", 218);
+    for (int j = 0; j < 34; j++)
+    {
+        printf("%c", 196);
+    }
+    printf("%c", 191);
+
+    koor(3, 7), printf("%c", 179);
+    koor(11, 7), printf("Barang di Keranjang : ");
+    koor(38, 7), printf("%c", 179);
+    koor(3, 8), printf("%c No. Nama Barang", 179);
+    koor(30, 8), printf("Jumlah  %c", 179);
+    while (traversal != Nil)
+    {
+        koor(3, 8 + i), printf("%c", 179);
+        koor(5, 8 + i), printf("%d.  %s", i, traversal->namaBarang);
+        koor(32, 8 + i), printf("%d", traversal->jumlahBarang);
+        koor(38, 8 + i), printf("%c", 179);
+        traversal = traversal->next;
+        i++;
+    }
+
+    koor(3, 8 + i), printf("%c", 192);
+    for (int j = 0; j < 34; j++)
+    {
+        printf("%c", 196);
+    }
+    printf("%c", 217);
+}
+
 void tampilListAntrian(DataKasir kasir[3], int flagAntrian)
 {
     int x = 10, i;
@@ -144,7 +177,7 @@ void tampilListAntrian(DataKasir kasir[3], int flagAntrian)
             while ((transA) != Nil)
             {
                 y++;
-                koor(x, y), printf("%d. %s", j, transA->Pembeli->namaPembeli);
+                koor(x, y), printf("%d. %s", j, transA->pembeliDiAntrian.namaPembeli);
                 transA = (transA)->next;
                 j++;
             }
@@ -158,32 +191,33 @@ void tampilListAntrian(DataKasir kasir[3], int flagAntrian)
     }
 }
 
-void tampilanStruk(address_P pembeli, DataBarang dataBarang[MAX_BARANG], infochar namaKasir, int uangBayar, int x)
+void tampilanStruk(Pembeli pembeli, DataBarang dataBarang[MAX_BARANG], infochar namaKasir, int uangBayar)
 {
-    address_BB transBB;
-    int kodeBarang, noBarang = 1, y=12;
+    address_K transK;
+    int kodeBarang, noBarang = 1, y = 12;
 
     // Ini untuk menampilkan Struk
-    koor(x, 5), printf("======== SUPERMARKET JAYA ========");
-    koor(x, 7), printf("Kasir : %s", namaKasir);
-    koor(x, 8), printf("Nama Pembeli : %s", pembeli->namaPembeli);
-    displayWaktu(x+17, 10);
-    koor(x,11), printf("==================================");
-    transBB = pembeli->barangBelian;
-    while (transBB != Nil)
+    system("cls");
+    koor(35, 5), printf("============= SUPERMARKET JAYA =============");
+    koor(37, 7), printf("Kasir : %s", namaKasir);
+    koor(37, 8), printf("Nama Pembeli : %s", pembeli.namaPembeli);
+    displayWaktu(60, 10);
+    koor(35, 11), printf("============================================");
+    transK = pembeli.Keranjang;
+    while (transK != Nil)
     {
-        kodeBarang = searchBarang(dataBarang, transBB->namaBarang);
-        koor(x, y), printf("%d. %s", noBarang, transBB->namaBarang);
-        koor(x+17, y+1), printf("%d X %d = %d", pembeli->barangBelian->jumlahBarang, dataBarang[kodeBarang].harga, pembeli->barangBelian->jumlahBarang * dataBarang[kodeBarang].harga);
+        kodeBarang = searchBarang(dataBarang, transK->namaBarang);
+        koor(37, y), printf("%d. %s", noBarang, transK->namaBarang);
+        koor(62, y + 1), printf("%d X %d = %d", transK->jumlahBarang, dataBarang[kodeBarang].harga, transK->jumlahBarang * dataBarang[kodeBarang].harga);
         noBarang++;
         y += 2;
-        transBB = transBB->next;
+        transK = transK->next;
     }
-    koor(x, y), printf("==================================");
-    koor(x+12, y+2), printf("Total Harga : %d", pembeli->hargaTotal);
-    koor(x+18, y+3), printf("Bayar : %d", uangBayar);
-    koor(x+14, y+4), printf("Kembalian : %d", uangBayar-pembeli->hargaTotal);
-    koor(x, y+6), printf("========== Terima Kasih ==========");
+    koor(35, y), printf("============================================");
+    koor(59, y + 2), printf("Total Harga : %d", pembeli.hargaTotal);
+    koor(65, y + 3), printf("Bayar : %d", uangBayar);
+    koor(61, y + 4), printf("Kembalian : %d", uangBayar - pembeli.hargaTotal);
+    koor(35, y + 6), printf("=============== Terima Kasih ===============");
 }
 
 void displayWaktu(int x, int y)
@@ -192,17 +226,17 @@ void displayWaktu(int x, int y)
     struct tm tm = *localtime(&t);
     char s[20];
     strftime(s, sizeof(s), "%c", &tm);
-    koor(x,y), printf("%s", s);
+    koor(x, y), printf("%s", s);
 }
 
 void closeProgram()
 { // penutup program yang berdurasi 5 detik lalu akan tertutup dengan sendirinya.
     system("cls");
-    koor(10, 9), printf("d8b   db d888888b  .o88b. d88888b d888888b  .d88b.  .d8888. d88888b d88888b db    db  .d88b.  db    db \n");
-    koor(10, 10), printf("888o  88   `88'   d8P  Y8 88'     `~~88~~' .8P  Y8. 88'  YP 88'     88'     `8b  d8' .8P  Y8. 88    88 \n");
-    koor(10, 11), printf("88V8o 88    88    8P      88ooooo    88    88    88 `8bo.   88ooooo 88ooooo  `8bd8'  88    88 88    88 \n");
-    koor(10, 12), printf("88 V8o88    88    8b      88~~~~~    88    88    88   `Y8b. 88~~~~~ 88~~~~~    88    88    88 88    88 \n");
-    koor(10, 13), printf("88  V888   .88.   Y8b  d8 88.        88    `8b  d8' db   8D 88.     88.        88    `8b  d8' 88b  d88 \n");
+    koor(10, 9), printf("d8b   db d888888b  .o88b. d88888b d888888b  .d88b.  .d8888. d88888b d88888b db    db  .d88b.  db    db ");
+    koor(10, 10), printf("888o  88   `88'   d8P  Y8 88'     `~~88~~' .8P  Y8. 88'  YP 88'     88'     `8b  d8' .8P  Y8. 88    88 ");
+    koor(10, 11), printf("88V8o 88    88    8P      88ooooo    88    88    88 `8bo.   88ooooo 88ooooo  `8bd8'  88    88 88    88 ");
+    koor(10, 12), printf("88 V8o88    88    8b      88~~~~~    88    88    88   `Y8b. 88~~~~~ 88~~~~~    88    88    88 88    88 ");
+    koor(10, 13), printf("88  V888   .88.   Y8b  d8 88.        88    `8b  d8' db   8D 88.     88.        88    `8b  d8' 88b  d88 ");
     koor(10, 14), printf("VP   V8P Y888888P  `Y88P' Y88888P    YP     `Y88P'  `8888Y' Y88888P Y88888P    YP     `Y88P'  ~Y8888P'");
     sleep(5);
     exit(0);
