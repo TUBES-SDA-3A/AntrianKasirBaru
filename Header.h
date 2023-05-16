@@ -19,15 +19,15 @@ Anggota :
 #include <unistd.h>
 #define MAX_BARANG 10
 
-typedef const char * infochar;
+typedef const char *infochar;
 typedef struct Pembeli *address_P;
-typedef struct List_BarangBelian *address_BB;
+typedef struct ListKeranjang *address_K;
 typedef struct Antrian *address_A;
 
 typedef struct Pembeli
 {
     infochar namaPembeli;
-    address_BB barangBelian;
+    address_K Keranjang;
     int hargaTotal;
     int noKasir;
     address_P next;
@@ -40,16 +40,16 @@ typedef struct DataBarang
     int harga;
 } DataBarang;
 
-typedef struct List_BarangBelian
+typedef struct ListKeranjang
 {
     infochar namaBarang;
     int jumlahBarang;
-    address_BB next;
-} List_BarangBelian;
+    address_K next;
+} ListKeranjang;
 
 typedef struct Antrian
 {
-    address_P Pembeli;
+    Pembeli pembeliDiAntrian;
     address_A next;
 } Antrian;
 
@@ -60,33 +60,39 @@ typedef struct Kasir
     infochar namaKasir;
 } DataKasir;
 
+int inputPilihan(int flagInput);
+bool validasiMasukan(int pilihan, int flagValidasi);
+void checkBarangSama(address_K *transkeranjang, DataBarang dataBarang[MAX_BARANG], int kodeBarangBaru, bool *statusSama);
+void initPembeli(address_P nextP, Pembeli *pembeli);
 void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar namaPembeli, int noKasir);
 void alokasiNodePembeli(address_P *tempPembeli);
-void datangPembeli(address_P *headPembeli, DataBarang (*dataBarang)[MAX_BARANG], DataKasir (*kasir)[3]);
-void beliBarang(DataBarang (*dataBarang)[MAX_BARANG], address_P *newPembeli);
+void mengantrikanPembeli(address_P *headPembeli, DataBarang (*dataBarang)[MAX_BARANG], DataKasir (*kasir)[3]);
+void catatKeranjang(DataBarang (*dataBarang)[MAX_BARANG], address_P *newPembeli);
 void persediaanBarang(DataBarang (*dataBarang)[MAX_BARANG]);
-void alokasiNodeBarangBelian(address_BB *tempBarangBelian);
-void createNodeBarangBelian(address_BB *headBarangBelian, infochar namaBarang, int jumlahBarang);
+void alokasiNodeKeranjang(address_K *tempKeranjang);
+void createNodeKeranjang(address_K *headKeranjang, infochar namaBarang, int jumlahBarang);
 void alokasiAntrian(address_A *tempAntrian);
 void masukAntrian(DataKasir *kasir, address_P Pembeli);
 void initKasir(DataKasir (*kasir)[3]);
 void prosesAntrian(DataKasir (*kasir)[3], DataBarang dataBarang[MAX_BARANG]);
-
 int searchBarang(DataBarang dataBarang[MAX_BARANG], infochar namaBarang);
 
 // Tampilan
 void credit();
 void banner();
 void displayMenu();
-void displayListBarang(DataBarang dataBarang[MAX_BARANG], int flagListBarang);
+void displayPersediaanBarang(DataBarang dataBarang[MAX_BARANG], int flagPersediaanBarang);
+void displayListKeranjang(Pembeli pembeli);
 void tampilListAntrian(DataKasir kasir[3], int flagAntrian);
 void kotakPersediaanBarang(int flagKotak);
-void tampilanStruk(address_P pembeli, DataBarang dataBarang[MAX_BARANG], infochar namaKasir, int uangBayar, int x);
+void tampilanStruk(Pembeli pembeli, DataBarang dataBarang[MAX_BARANG], infochar namaKasir, int uangBayar);
 void displayWaktu(int x, int y);
 void closeProgram();
 
 // Teknis
 void koor(int x, int y);
 void setColor(unsigned short color);
+
+
 
 #endif

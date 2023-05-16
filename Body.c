@@ -1,7 +1,72 @@
 #include "Header.h"
 
-/****************** Datang Pembeli *******************/
-void datangPembeli(address_P *headPembeli, DataBarang (*dataBarang)[MAX_BARANG], DataKasir (*kasir)[3])
+/********************* Validasi *********************/
+int inputPilihan(int flagInput)
+{
+	int pilihan, x, y = 20;
+
+	if (flagInput == 5)
+	{
+		x = 63;
+	}
+	else if (flagInput == 2)
+	{
+		x = 64;
+		y = 13;
+	}
+
+	else
+	{
+		x = 80;
+	}
+
+	do
+	{
+		koor(x, y), scanf("%d", &pilihan);
+	} while (!validasiMasukan(pilihan, flagInput));
+
+	return pilihan;
+}
+
+bool validasiMasukan(int pilihan, int flagValidasi)
+{
+	if (pilihan > 0 && pilihan <= flagValidasi)
+	{
+		return true;
+	}
+	else
+	{
+		if (flagValidasi != 5)
+		{
+			koor(40, 21), printf("Masukan tidak tersedia, silahkan masukan kembali!!");
+			getch();
+			koor(80, 20), printf("         ");
+			koor(40, 21), printf("                                                  ");
+		}
+
+		return false;
+	}
+}
+
+void checkBarangSama(address_K *transkeranjang, DataBarang dataBarang[MAX_BARANG], int kodeBarangBaru, bool *statusSama)
+{
+	while (*transkeranjang != Nil)
+	{
+		if (strcmp(dataBarang[kodeBarangBaru].nama, (*transkeranjang)->namaBarang) == 0)
+		{
+			*statusSama = true;
+			return;
+		}
+		else
+		{
+			*statusSama = false;
+			*transkeranjang = (*transkeranjang)->next;
+		}
+	}
+}
+
+/****************** Mengantrikan Pembeli *******************/
+void mengantrikanPembeli(address_P *headPembeli, DataBarang (*dataBarang)[MAX_BARANG], DataKasir (*kasir)[3])
 {
 	infochar namaPembeli = (infochar)malloc(sizeof(infochar));
 	int noKasir;
@@ -14,12 +79,12 @@ void datangPembeli(address_P *headPembeli, DataBarang (*dataBarang)[MAX_BARANG],
 	koor(40, 16), printf("Masukan nama untuk pembeli : ");
 	scanf(" %[^\n]", namaPembeli);
 
-	beliBarang(&(*dataBarang), &newPembeli);
+	catatKeranjang(&(*dataBarang), &newPembeli);
 
 	system("cls");
 	tampilListAntrian((*kasir), 2);
-	koor(40, 25), printf("Masukan No kasir yang di pilih (1-3): ");
-	scanf("%d", &noKasir);
+	koor(40, 20), printf("Masukan No kasir yang di pilih (1-3) : ");
+	noKasir = inputPilihan(3);
 
 	createNodePembeli(&(*headPembeli), &newPembeli, namaPembeli, noKasir);
 	masukAntrian(&(*kasir)[noKasir - 1], newPembeli);
@@ -30,61 +95,85 @@ void datangPembeli(address_P *headPembeli, DataBarang (*dataBarang)[MAX_BARANG],
 	getch();
 }
 
-void beliBarang(DataBarang (*dataBarang)[MAX_BARANG], address_P *newPembeli)
+void catatKeranjang(DataBarang (*dataBarang)[MAX_BARANG], address_P *newPembeli)
 {
 	int kodeBarang, jumlahBarang, pilihanLagi = 1;
 
-	// alokasiNodeBarangBelian(&(*newPembeli)->barangBelian);
-
 	while (pilihanLagi == 1)
 	{
+		bool statusSama = false;
+		address_K transKeranjang = (*newPembeli)->Keranjang;
+
 		system("cls");
-		displayListBarang((*dataBarang), 2);
-		koor(45, 17), printf("Masukan kode barang yang dipilih : ");
-		scanf("%d", &kodeBarang);
+		displayPersediaanBarang((*dataBarang), 2);
+		koor(45, 20), printf("Masukan kode barang yang dipilih :");
+		kodeBarang = inputPilihan(10);
 		kodeBarang -= 1;
 
-		koor(45, 18), printf("Masukan jumlah barang : ");
+		koor(45, 21), printf("Masukan jumlah barang : ");
 		scanf("%d", &jumlahBarang);
 
-		if ((*dataBarang)[kodeBarang].stok > 0 && (*dataBarang)[kodeBarang].stok >= jumlahBarang)
+		checkBarangSama(&transKeranjang, (*dataBarang), kodeBarang, &statusSama);
+
+		if ((*dataBarang)[kodeBarang].stok > 0 && (*dataBarang)[kodeBarang].stok >= jumlahBarang && jumlahBarang != 0)
 		{
-			(*newPembeli)->hargaTotal += (*dataBarang)[kodeBarang].harga * jumlahBarang;
-			(*dataBarang)[kodeBarang].stok = (*dataBarang)[kodeBarang].stok - jumlahBarang;
-			createNodeBarangBelian(&(*newPembeli)->barangBelian, (*dataBarang)[kodeBarang].nama, jumlahBarang);
-			koor(30, 20), printf("%s berhasil ditambahkan ke dalam keranjang.", (*dataBarang)[kodeBarang].nama);
+			if (statusSama)
+			{
+				transKeranjang->jumlahBarang += jumlahBarang;
+			}
+			else
+			{
+				(*newPembeli)->hargaTotal += (*dataBarang)[kodeBarang].harga * jumlahBarang;
+				(*dataBarang)[kodeBarang].stok = (*dataBarang)[kodeBarang].stok - jumlahBarang;
+				createNodeKeranjang(&(*newPembeli)->Keranjang, (*dataBarang)[kodeBarang].nama, jumlahBarang);
+			}
+			koor(30, 22), printf("%s berhasil ditambahkan ke dalam keranjang.", (*dataBarang)[kodeBarang].nama);
+
 			system("cls");
-			koor(45, 10), printf("Ingin pesan lagi ? ");
+			koor(45, 10), printf("Apakah ada yang ingin di tambah lagi ? ");
 			koor(45, 11), printf("1. YA");
 			koor(45, 12), printf("2. Tidak");
 			koor(45, 13), printf("Masukan pilihan : ");
-			scanf("%d", &pilihanLagi);
+			pilihanLagi = inputPilihan(2);
 		}
 		else if ((*dataBarang)[kodeBarang].stok < 0)
 		{
-			koor(30, 20), printf("Maaf persediaan habis. Silahkan beli yang lain!!");
+			koor(30, 22), printf("Maaf persediaan habis. Silahkan beli yang lain!!");
 			getch();
 		}
 		else if ((*dataBarang)[kodeBarang].stok < jumlahBarang)
 		{
-			koor(25, 20), printf("Maaf persediaan kurang. Silahkan ubah jumlah barang atau beli yang lain!!");
+			koor(25, 22), printf("Maaf persediaan kurang. Silahkan ubah jumlah barang atau beli yang lain!!");
+			getch();
+		}
+		else if (jumlahBarang == 0)
+		{
+			koor(25, 22), printf("Maaf jumlah barang yang di masukan salah. Silahkan ubah jumlah barang!!");
 			getch();
 		}
 	}
 }
 
 /****************** Pembeli *******************/
+void initPembeli(address_P nextP, Pembeli *pembeli)
+{
+	(*pembeli).namaPembeli = nextP->namaPembeli;
+	(*pembeli).Keranjang = nextP->Keranjang;
+	(*pembeli).hargaTotal = nextP->hargaTotal;
+	(*pembeli).noKasir = nextP->noKasir;
+}
+
 void alokasiNodePembeli(address_P *tempPembeli)
 {
 	*tempPembeli = (address_P)malloc(sizeof(Pembeli));
-	(*tempPembeli)->barangBelian = Nil;
+	(*tempPembeli)->Keranjang = Nil;
 	(*tempPembeli)->hargaTotal = 0;
 	(*tempPembeli)->next = Nil;
 }
 
 void createNodePembeli(address_P *headPembeli, address_P *newPembeli, infochar namaPembeli, int noKasir)
 {
-	/* 	I.S : headPembeli dan newPembeli belum memiliki nilai atau masih kosong, dan address_BB q, infochar namaPembeli, int No_Kasir, dan int uangPembeli diisi dengan nilai yang sesuai.
+	/* 	I.S : headPembeli dan newPembeli belum memiliki nilai atau masih kosong, dan address_K q, infochar namaPembeli, int No_Kasir, dan int uangPembeli diisi dengan nilai yang sesuai.
 		F.S : terbentuknya sebuah node baru pada linked list pembeli dengan informasi yang sudah diisi dan disambungkan ke linked list.
 	*/
 
@@ -123,14 +212,14 @@ void persediaanBarang(DataBarang (*dataBarang)[MAX_BARANG])
 	(*dataBarang)[9].nama = "Chiki", (*dataBarang)[9].stok = 100, (*dataBarang)[9].harga = 12000;
 }
 
-/****************** Barang Belian *******************/
-void alokasiNodeBarangBelian(address_BB *tempBarangBelian)
+/****************** Keranjang *******************/
+void alokasiNodeKeranjang(address_K *tempKeranjang)
 {
-	*tempBarangBelian = (address_BB)malloc(sizeof(List_BarangBelian));
-	(*tempBarangBelian)->next = Nil;
+	*tempKeranjang = (address_K)malloc(sizeof(ListKeranjang));
+	(*tempKeranjang)->next = Nil;
 }
 
-void createNodeBarangBelian(address_BB *headBarangBelian, infochar namaBarang, int jumlahBarang)
+void createNodeKeranjang(address_K *headKeranjang, infochar namaBarang, int jumlahBarang)
 {
 	/* I.S : - headAntrian merupakan pointer ke list antrian yang awalnya kosong atau NULL.
 			 - newAntrian merupakan pointer yang belum dialokasikan ke memori.
@@ -138,27 +227,27 @@ void createNodeBarangBelian(address_BB *headBarangBelian, infochar namaBarang, i
 	   F.S : newAntrian telah dialokasikan ke memori, memiliki nilai next yang diisi dengan NULL, dan memiliki nilai Pembeli yang diisi dengan Pembeli.
 	*/
 
-	address_BB transBB;
+	address_K transBB;
 
-	address_BB newBarangBelian;
+	address_K newKeranjang;
 
-	alokasiNodeBarangBelian(&newBarangBelian);
+	alokasiNodeKeranjang(&newKeranjang);
 
-	(newBarangBelian)->namaBarang = namaBarang;
-	(newBarangBelian)->jumlahBarang = jumlahBarang;
+	(newKeranjang)->namaBarang = namaBarang;
+	(newKeranjang)->jumlahBarang = jumlahBarang;
 
-	if ((*headBarangBelian) == Nil)
+	if ((*headKeranjang) == Nil)
 	{
-		*headBarangBelian = newBarangBelian;
+		*headKeranjang = newKeranjang;
 	}
 	else
 	{
-		transBB = *headBarangBelian;
+		transBB = *headKeranjang;
 		while (transBB->next != Nil)
 		{
 			transBB = (transBB)->next;
 		}
-		transBB->next = newBarangBelian;
+		transBB->next = newKeranjang;
 		transBB->next->next = Nil;
 	}
 }
@@ -180,8 +269,8 @@ void initKasir(DataKasir (*kasir)[3])
 void alokasiAntrian(address_A *tempAntrian)
 {
 	*tempAntrian = (address_A)malloc(sizeof(Antrian));
+
 	(*tempAntrian)->next = Nil;
-	(*tempAntrian)->Pembeli = Nil;
 }
 
 void masukAntrian(DataKasir *kasir, address_P newPembeli)
@@ -203,13 +292,13 @@ void masukAntrian(DataKasir *kasir, address_P newPembeli)
 			tempAntrian = (tempAntrian)->next;
 		}
 		alokasiAntrian(&(tempAntrian)->next);
-		(tempAntrian)->next->Pembeli = newPembeli;
+		initPembeli(newPembeli, &(tempAntrian)->next->pembeliDiAntrian);
 		(tempAntrian)->next->next = Nil;
 	}
 	else
 	{
 		alokasiAntrian(&tempAntrian);
-		tempAntrian->Pembeli = newPembeli;
+		initPembeli(newPembeli, &tempAntrian->pembeliDiAntrian);
 		tempAntrian->next = Nil;
 		(*kasir).next = tempAntrian;
 	}
@@ -217,50 +306,47 @@ void masukAntrian(DataKasir *kasir, address_P newPembeli)
 
 void prosesAntrian(DataKasir (*kasir)[3], DataBarang dataBarang[MAX_BARANG])
 {
-	int uangPembeli, x;
-	bool status;
+	int uangPembeli, noKasir;
+	bool status = true;
 
-	// proses antrian ini memproses alias menghapus antrian pertama di setiap kasir.
-	for (int i = 0; i < 3; i++)
+	system("cls");
+	tampilListAntrian((*kasir), 2);
+	koor(34, 20), printf("Masukan no kasir yang akan melayani pembeli : ");
+	noKasir = inputPilihan(3);
+	if ((*kasir)[noKasir - 1].next != Nil) // cek apakah ada pembeli dalam antrian kasir
 	{
-		status = true;
-		x = 4 + (i * 40);
-		if ((*kasir)[i].next != Nil) // cek apakah ada pembeli dalam antrian kasir
+		address_A tempAntrian = (*kasir)[noKasir - 1].next;
+		while (status)
 		{
-			address_A tempAntrian = (*kasir)[i].next;
-			while (status)
+			system("cls");
+			displayListKeranjang(tempAntrian->pembeliDiAntrian);
+			koor(45, 10), printf("Harga Total %s  sebesar %d", tempAntrian->pembeliDiAntrian.namaPembeli, tempAntrian->pembeliDiAntrian.hargaTotal);
+			koor(45, 11), printf("Masukan uang pembayaran : ");
+			scanf("%d", &uangPembeli);
+			if (tempAntrian->pembeliDiAntrian.hargaTotal > uangPembeli)
 			{
-				koor(x, 14), printf("Harga Total %s  sebesar %d", tempAntrian->Pembeli->namaPembeli, tempAntrian->Pembeli->hargaTotal);
-				koor(x, 15), printf("Masukan uang pembayaran : ");
-				scanf("%d", &uangPembeli);
-				if (tempAntrian->Pembeli->hargaTotal > uangPembeli)
-				{
-					koor(x, 16), printf("Uang tidak cukup.");
-					koor(x, 17), printf("Tekan apapun untuk masukan ulang!");
-					getch();
-				}
-				else
-				{
-					status = false;
-				}
-				// Menghapus tampilan masukan uang pembeli
-				koor(x, 14), printf("                                                 ");
-				koor(x, 15), printf("                                                 ");
-				koor(x, 16), printf("                                                 ");
-				koor(x, 17), printf("                                                 ");
+				koor(45, 13), printf("Uang tidak cukup.");
+				koor(45, 14), printf("Tekan apapun untuk masukan ulang!");
+				getch();
 			}
+			else
+			{
+				status = false;
+			}
+		}
 
-			tampilanStruk(tempAntrian->Pembeli, dataBarang, (*kasir)[i].namaKasir, uangPembeli, x);
-			(*kasir)[i].next = tempAntrian->next; // Antrian kedua maju menjadi antrian pertama
-			free(tempAntrian);					  // hapus pembeli pertama dalam antrian
-		}
-		else
-		{
-			koor(x, 10), printf("Belum ada antrian didalam kasir!");
-		}
+		tampilanStruk(tempAntrian->pembeliDiAntrian, dataBarang, (*kasir)[noKasir - 1].namaKasir, uangPembeli);
+		(*kasir)[noKasir-1].next = tempAntrian->next; // Antrian kedua maju menjadi antrian pertama
+		free(tempAntrian);							// hapus pembeli pertama dalam antrian
+		koor(80, 2), printf("Ketik apapun untuk kembali ke menu!!");
+		getch();
 	}
-	koor(80, 2), printf("Ketik apapun untuk kembali ke menu!!");
-	getch();
+	else
+	{
+		koor(45, 21), printf("Belum ada antrian didalam kasir!");
+		koor(5, 25), printf("Ketik apapun untuk kembali ke menu!!");
+		getch();
+	}
 }
 
 int searchBarang(DataBarang dataBarang[MAX_BARANG], infochar namaBarang)

@@ -6,11 +6,10 @@ int main()
     DataBarang dataBarang[MAX_BARANG];
     DataKasir kasir[3];
     address_P headPembeli;
-    Pembeli pembeli;
-    DataBarang barangBelian;
+    
     int uangBayar, kembalian;
     bool status = true;
-    int pilihan;
+    int pilihan = 0;
 
     // Inisialisasi
     persediaanBarang(&dataBarang);
@@ -18,6 +17,7 @@ int main()
 
     // Alokasi Node
     alokasiNodePembeli(&headPembeli);
+
     credit();
 
     // Algoritma
@@ -25,17 +25,17 @@ int main()
     {
         system("cls");
         displayMenu();
-        scanf(" %d", &pilihan);
+        pilihan = inputPilihan(5);
         switch (pilihan)
         {
         case 1:
             system("cls");
-            displayListBarang(dataBarang, 1);
+            displayPersediaanBarang(dataBarang, 1);
             break;
 
         case 2:
             system("cls");
-            datangPembeli(&headPembeli, &dataBarang, &kasir);
+            mengantrikanPembeli(&headPembeli, &dataBarang, &kasir);
             break;
 
         case 3:
@@ -53,7 +53,7 @@ int main()
             break;
 
         default:
-            koor(43, 22), printf("Masukan tidak valid. Silahkan masukan kembali!");
+            koor(37, 22), printf("Masukan tidak valid. Silahkan masukan kembali!");
             getch();
             break;
         }
