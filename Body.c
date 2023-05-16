@@ -120,6 +120,7 @@ void catatKeranjang(DataBarang (*dataBarang)[MAX_BARANG], address_P *newPembeli)
 			if (statusSama)
 			{
 				transKeranjang->jumlahBarang += jumlahBarang;
+				(*newPembeli)->hargaTotal += (*dataBarang)[kodeBarang].harga * jumlahBarang;
 			}
 			else
 			{
@@ -336,8 +337,8 @@ void prosesAntrian(DataKasir (*kasir)[3], DataBarang dataBarang[MAX_BARANG])
 		}
 
 		tampilanStruk(tempAntrian->pembeliDiAntrian, dataBarang, (*kasir)[noKasir - 1].namaKasir, uangPembeli);
-		(*kasir)[noKasir-1].next = tempAntrian->next; // Antrian kedua maju menjadi antrian pertama
-		free(tempAntrian);							// hapus pembeli pertama dalam antrian
+		(*kasir)[noKasir - 1].next = tempAntrian->next; // Antrian kedua maju menjadi antrian pertama
+		free(tempAntrian);								// hapus pembeli pertama dalam antrian
 		koor(80, 2), printf("Ketik apapun untuk kembali ke menu!!");
 		getch();
 	}
